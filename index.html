@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SPLIT RUN - Deforma el Tiempo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
+body{background:#05060d;color:#e8faff;font-family:'Orbitron',monospace;overflow:hidden;height:100vh;display:flex;flex-direction:column;align-items:center;user-select:none}
+.header{width:95%;margin:8px;padding:10px;border:1px solid #00f7ff;border-radius:12px;text-align:center;box-shadow:0 0 15px #00f7ff55;background:linear-gradient(180deg,#0b1626,#05060d)}
+.header h1{font-size:22px;letter-spacing:4px;text-shadow:0 0 10px #00f7ff}
+.header p{font-size:11px;color:#7fbfd0;letter-spacing:2px;margin-top:2px}
+.topbar{width:95%;display:flex;justify-content:space-between;margin:6px 0;font-size:12px}
+.badge{border:1px solid #1f3a4a;padding:6px 10px;border-radius:8px;background:#0a1018}
+#canvasWrap{position:relative;width:95vw;max-width:420px;aspect-ratio:1;border-radius:50%;overflow:hidden;border:2px solid #222;box-shadow:0 0 40px #00f7ff33, inset 0 0 40px #000}
+canvas{width:100%;height:100%;display:block;background:radial-gradient(circle at 50% 50%, #0b1a2a, #02040a)}
+.controls{width:95%;max-width:420px;margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.btn{padding:14px 4px;border-radius:14px;border:2px solid;font-weight:900;font-size:12px;background:#0a0f1a;text-align:center;cursor:pointer}
+#btnHorario{border-color:#ffcc33;color:#ffcc33}#btnMerkaba{border-color:#00f7ff;color:#00f7ff}#btnAnti{border-color:#ff3b6b;color:#ff3b6b}
+#btnHorario.active{background:#ffcc33;color:#001}#btnMerkaba.active{background:#00f7ff;color:#001}#btnAnti.active{background:#ff3b6b;color:#fff}
+.timer{margin-top:8px;font-size:14px}.msg{margin-top:6px;font-size:11px;min-height:18px;color:#8fe9ff;text-align:center}
+</style>
+</head>
+<body>
+<div class="header"><h1>SPLIT RUN</h1><p>Deforma el Tiempo</p></div>
+<div class="topbar"><div class="badge">⚡ Lv.<span id="lvl">07</span></div><div class="badge">🔋 <span id="energy">84</span>%</div><div class="badge">🧬 <span id="cells">1</span></div></div>
+<div id="canvasWrap"><canvas id="c" width="400" height="400"></canvas></div>
+<div class="timer">⏱ <span id="time">00:30</span> • <span id="mode">MODO MATRIX ACTIVO</span></div>
+<div class="controls">
+<div class="btn" id="btnHorario">↻<br>HORARIO<br><small>x2.5</small></div>
+<div class="btn" id="btnMerkaba">✡<br>MERKABA<br><small>FREEZE</small></div>
+<div class="btn" id="btnAnti">↺<br>ANTI<br><small>REWIND</small></div>
+</div>
+<div class="msg" id="msg">TOCA PARA ROTAR EL TIEMPO • Salva la célula del virus</div>
+<script>
+const canvas=document.getElementById('c'), ctx=canvas.getContext('2d');
+let timeScale=1, rotGold=0, rotCyan=0, energy=84, lvl=7, gameTime=30, mito=[], viruses=[], antibodies=[], history=[];
+function init(){mito=[];for(let i=0;i<6;i++)mito.push({a:i*60+Math.random()*20,r:80+Math.random()*50,pulse:Math.random()*6.28,size:18+Math.random()*8});viruses=[];for(let i=0;i<1;i++)viruses.push({x:Math.random()*300+50,y:Math.random()*200+100,vx:(Math.random()-0.5)*1.5,vy:(Math.random()-0.5)*1.5,r:14});}init();
+const btnH=document.getElementById('btnHorario'),btnM=document.getElementById('btnMerkaba'),btnA=document.getElementById('btnAnti'),msg=document.getElementById('msg'),modeEl=document.getElementById('mode');
+function setMode(m,s,t){timeScale=s;modeEl.textContent=m;msg.textContent=t;[btnH,btnM,btnA].forEach(b=>b.classList.remove('active'));if(m.includes('HORARIO')&&!m.includes('ANTI'))btnH.classList.add('active');if(m.includes('MERKABA'))btnM.classList.add('active');if(m.includes('ANTI'))btnA.classList.add('active');}
+btnH.onclick=()=>setMode('HORARIO x2.5',2.5,'Tiempo acelerado ⚡');btnM.onclick=()=>setMode('MERKABA FREEZE',0.02,'TIEMPO CONGELADO ❄️');btnA.onclick=()=>setMode('ANTI-HORARIO REWIND',-2,'¡REBOBINANDO! ⏪');
+canvas.onclick=e=>{const r=canvas.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*400;const y=(e.clientY-r.top)/r.height*400;antibodies.push({x,y,r:6,life:100});};
+let last=performance.now();
+function loop(t){const dt=Math.min(0.05,(t-last)/1000);last=t;
+if(Math.abs(timeScale)>0.1)history.push({mito:JSON.parse(JSON.stringify(mito)),viruses:JSON.parse(JSON.stringify(viruses)),e:energy});if(history.length>300)history.shift();
+if(timeScale<0&&history.length>5){let p=history.pop();mito=p.mito;viruses=p.viruses;energy=p.e;energy=Math.min(100,energy+0.3);}else{rotGold+=(timeScale>0?1.5:-1)*dt*80;rotCyan+=(timeScale>0?-1.2:1)*dt*90;mito.forEach(m=>{m.pulse+=dt*timeScale*2;m.a+=dt*timeScale*0.2;});viruses.forEach(v=>{v.x+=v.vx*timeScale;v.y+=v.vy*timeScale;if(v.x<20||v.x>380)v.vx*=-1;if(v.y<20||v.y>380)v.vy*=-1;});antibodies.forEach(a=>a.life-=dt*20);antibodies=antibodies.filter(a=>a.life>0);viruses=viruses.filter(v=>!antibodies.some(a=>Math.hypot(a.x-v.x,a.y-v.y)<18));if(timeScale>0.5)energy=Math.max(0,energy-dt*2);else if(timeScale<0.1)energy=Math.min(100,energy+dt*1);if(Math.random()<0.02*timeScale&&timeScale>0&&viruses.length<4)viruses.push({x:Math.random()*300+50,y:Math.random()*300+50,vx:(Math.random()-0.5)*2,vy:(Math.random()-0.5)*2,r:14});}
+ctx.clearRect(0,0,400,400);let g=ctx.createRadialGradient(200,200,0,200,200,200);g.addColorStop(0,'#0b1a2e');g.addColorStop(1,'#02040a');ctx.fillStyle=g;ctx.fillRect(0,0,400,400);
+ctx.save();ctx.translate(200,200);ctx.fillStyle='rgba(0,247,255,0.08)';ctx.beginPath();ctx.arc(0,0,140+Math.sin(t*0.002)*5,0,Math.PI*2);ctx.fill();
+ctx.strokeStyle='rgba(0,247,255,0.4)';ctx.lineWidth=2;ctx.setLineDash([8,6]);ctx.rotate(rotGold*Math.PI/180);ctx.beginPath();ctx.arc(0,0,155,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.rotate(-rotGold*Math.PI/180+rotCyan*Math.PI/180);ctx.strokeStyle='rgba(255,204,51,0.5)';ctx.beginPath();ctx.arc(0,0,170,0,Math.PI*2);ctx.stroke();ctx.rotate(-rotCyan*Math.PI/180);
+mito.forEach(m=>{let x=Math.cos(m.a)*m.r,y=Math.sin(m.a)*m.r*0.7;ctx.save();ctx.translate(x,y);ctx.rotate(m.a);let glow=0.5+0.5*Math.sin(m.pulse);ctx.fillStyle=`rgba(${255*glow},${200+55*glow},51,0.8)`;ctx.shadowColor='#ffcc33';ctx.shadowBlur=10*glow;ctx.beginPath();ctx.ellipse(0,0,m.size,m.size*0.6,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.restore();});
+viruses.forEach(v=>{ctx.fillStyle='#ff2b4d';ctx.shadowColor='#ff2b4d';ctx.shadowBlur=15;ctx.beginPath();ctx.arc(v.x-200,v.y-200,v.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;});
+antibodies.forEach(a=>{ctx.fillStyle=`rgba(0,247,255,${a.life/100})`;ctx.beginPath();ctx.arc(a.x-200,a.y-200,a.r,0,Math.PI*2);ctx.fill();});
+let n=ctx.createRadialGradient(0,0,0,0,0,20);n.addColorStop(0,'#ffffff');n.addColorStop(1,'#00f7ff');ctx.fillStyle=n;ctx.beginPath();ctx.arc(0,0,14+Math.sin(t*0.005)*2,0,Math.PI*2);ctx.fill();ctx.restore();
+document.getElementById('energy').textContent=Math.floor(energy);if(energy<=0){setMode('MUERTA - USA ANTI',-1.5,'¡Célula muerta! Toca ANTI para revivir');energy=1;}
+requestAnimationFrame(loop);}loop(performance.now());
+setInterval(()=>{if(timeScale>0.1)gameTime=Math.max(0,gameTime-0.1);document.getElementById('time').textContent='00:'+String(Math.floor(gameTime)).padStart(2,'0');if(gameTime<=0){lvl++;document.getElementById('lvl').textContent=String(lvl).padStart(2,'0');gameTime=30;viruses=[];msg.textContent='¡NIVEL SUPERADO! '+lvl+' células';}},100);
+</script>
+</body>
+</html>
