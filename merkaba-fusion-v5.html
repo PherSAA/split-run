@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MERKABA FUSION v5 · Teleport visible</title>
+<style>html,body{margin:0;height:100%;background:#020510}body{display:flex;flex-direction:column;height:100dvh}.mk{flex:1}
+.mk{position:relative;background:#020510;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+.mk .mtop{padding:8px 12px;display:flex;justify-content:space-between;align-items:center;background:#001a33;border-bottom:2px solid #00e5ff;font-size:12px;letter-spacing:.06em}
+.mk .badge{font-size:10px;padding:3px 8px;border:1px solid #00e5ff;border-radius:99px;color:#88ddff;cursor:pointer;background:none}
+.mk .stage{position:relative;flex:1;min-height:0}
+.mk canvas{width:100%;height:100%;display:block;touch-action:manipulation}
+.mk .meta{position:absolute;top:6px;left:0;right:0;text-align:center;font:10px ui-monospace,monospace;color:#ffef88;pointer-events:none}
+.mk .hud{padding:8px;background:linear-gradient(0deg,#000,#020510)}
+.mk .mlog{font:11px ui-monospace,monospace;color:#7effd1;text-align:center;margin-bottom:6px;min-height:15px}
+.mk .stats{display:flex;gap:6px;margin-bottom:8px}
+.mk .stat{flex:1;background:rgba(0,40,80,.7);border:1px solid #00e5ff;border-radius:8px;padding:5px;text-align:center;font-size:10px}
+.mk .stat b{font-size:18px;display:block;font-variant-numeric:tabular-nums}
+.mk .so{border-color:#ffd700}.mk .so b{color:#ffd700}.mk .sd{border-color:#00ff88}.mk .sd b{color:#00ff88}
+.mk .btns{display:flex;gap:6px;flex-wrap:wrap}
+.mk .btn{flex:1;min-width:70px;padding:10px 4px;border-radius:12px;border:2px solid;font:800 10px system-ui,sans-serif;letter-spacing:.05em;cursor:pointer;color:#fff}
+.mk .btn.on{box-shadow:0 0 12px currentColor}
+.mk .b1{border-color:#00aaff;color:#88ddff;background:rgba(0,100,200,.3)}
+.mk .b2{border-color:#ffd700;color:#ffef88;background:rgba(255,200,0,.15)}
+.mk .b3{border-color:#ff8800;color:#ffbb66;background:rgba(255,100,0,.25)}
+.mk .b4{flex-basis:100%;border-color:#00ff88;color:#aaffcc;background:rgba(0,255,100,.22);font-size:12px;padding:12px}
+.mk .b4:disabled{opacity:.5}
+.mk .b5{border-color:#557;color:#aab;background:rgba(80,80,120,.2)}
+.mk .modal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,20,40,.97);border:2px solid #00ff88;border-radius:16px;padding:14px;width:88%;max-width:340px;display:none;z-index:10}
+.mk .modal h3{margin:0 0 6px;font-size:14px}
+.mk .mono{font:10px ui-monospace,monospace;background:#000;padding:8px;border-radius:6px;word-break:break-all;max-height:140px;overflow:auto;color:#0f0;border:1px solid #0a0;white-space:pre-wrap}
+.mk .note{font-size:11px;color:#ffef88;margin:6px 0;line-height:1.4}
+</style></head><body>
+<div class="mk" id="mk">
+<div class="mtop"><b>◆ MERKABA FUSION v5</b><button class="badge" id="mkBadge" title="Modo admin (solo visual)">VISITANTE</button></div>
+<div class="stage"><canvas id="mkC"></canvas><div class="meta">Animación: metáfora de transmisión de datos · no es teletransportación real</div></div>
+<div class="hud">
+<div class="mlog" id="mkLog">Listo · 8 células en ORIGEN</div>
+<div class="stats"><div class="stat so"><span>ORIGEN</span><b id="mkO">8</b></div><div class="stat"><span>EN TRÁNSITO</span><b id="mkT">0</b></div><div class="stat sd"><span>DESTINO</span><b id="mkD">0</b></div></div>
+<div class="btns"><button class="btn b1" data-m="fast">HORARIO ×2.5</button><button class="btn b2" data-m="freeze">FREEZE</button><button class="btn b3" data-m="rewind">REWIND</button><button class="btn b5" id="mkSnd">🔇 SONIDO</button>
+<button class="btn b4" id="mkGo">✦ TELETRANSPORTAR CÉLULAS</button></div>
+</div>
+<div class="modal" id="mkModal"><h3>Datos transmitidos (ejemplo)</h3><div class="note">Archivo .fasta de EJEMPLO: secuencia de ejemplo, no ADN real, no curada. Sin uso médico ni científico.</div><div class="mono" id="mkFasta"></div>
+<div class="btns" style="margin-top:10px"><button class="btn b4" style="flex-basis:auto" id="mkDl">DESCARGAR EJEMPLO .fasta</button><button class="btn b1" id="mkClose">CERRAR</button></div></div>
+</div>
+<script>
+(function(){
+const $=id=>document.getElementById(id),cv=$('mkC'),ctx=cv.getContext('2d');
+const W=400,H=600,N=8,TAU=Math.PI*2;
+let dpr=1,time=0,mode='fusion',admin=false,sound=false,ac=null,last=performance.now();
+function fit(){const r=cv.getBoundingClientRect();dpr=Math.min(2,window.devicePixelRatio||1);cv.width=r.width*dpr;cv.height=r.height*dpr}
+addEventListener('resize',fit);
+// Zonas: A arriba-izquierda, B abajo-derecha. Se alternan origen/destino en cada envío.
+const Z=[{x:105,y:150},{x:295,y:430}];let src=0;
+const slot=(z,i)=>{const a=i/N*TAU+time*0.6*(z?-1:1);return{x:Z[z].x+Math.cos(a)*46,y:Z[z].y+Math.sin(a)*46}};
+const cells=[];for(let i=0;i<N;i++)cells.push({z:0,i,hue:i%2?'#00e5ff':'#ffd700',st:'idle',t0:0,from:null,to:null,P:[]});
+for(const c of cells)for(let k=0;k<26;k++)c.P.push({a:Math.random()*TAU,r:8+Math.random()*28,l:Math.random()*0.25,w:(Math.random()-.5)*30});
+let cntO=N,cntT=0,cntD=0,running=false,tStart=0,flashes=[];
+const DIS=.42,TR=.5,RE=.42,STAG=.17;// ~2.9 s en total
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,cl=t=>t<0?0:t>1?1:t;
+function setMode(m){mode=mode===m?'fusion':m;document.querySelectorAll('#mk [data-m]').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));log('Modo: '+(mode==='fusion'?'normal':mode==='fast'?'horario ×2.5':mode))}
+document.querySelectorAll('#mk [data-m]').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+function log(s){$('mkLog').textContent=s}
+function upd(){$('mkO').textContent=cntO;$('mkT').textContent=cntT;$('mkD').textContent=cntD}
+function beep(f,d){if(!sound)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(f,ac.currentTime);o.frequency.exponentialRampToValueAtTime(f*2,ac.currentTime+d);g.gain.setValueAtTime(.06,ac.currentTime);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+$('mkSnd').onclick=()=>{sound=!sound;$('mkSnd').textContent=sound?'🔊 SONIDO':'🔇 SONIDO';if(sound)beep(440,.1)};
+// Modo admin heredado de v4: solo cambia colores. NO es seguridad (el código es público).
+$('mkBadge').onclick=()=>{if(admin){admin=false;localStorage.removeItem('phersaa_admin')}else{const p=prompt('Código admin (solo visual, no es seguridad):');if(p==='PHERSAA2026'){admin=true;localStorage.setItem('phersaa_admin','true')}}$('mkBadge').textContent=admin?'ADMIN PHERSAA':'VISITANTE'};
+try{if(localStorage.getItem('phersaa_admin')==='true'){admin=true;$('mkBadge').textContent='ADMIN PHERSAA'}}catch(e){}
+function go(){if(running)return;running=true;$('mkGo').disabled=true;tStart=performance.now()/1000;const dst=1-src;
+ cells.forEach((c,k)=>{c.st='wait';c.t0=tStart+k*STAG;c.dst=dst});
+ cntO=N;cntT=0;cntD=0;upd();log('Iniciando envío '+(src?'B→A':'A→B')+' · '+N+' paquetes');beep(220,.25);try{navigator.vibrate&&navigator.vibrate(40)}catch(e){}}
+$('mkGo').onclick=go;
+function step(now){const t=now/1000;let done=0;
+ for(const c of cells){if(c.st==='idle'){done++;continue}const e=t-c.t0;
+  if(c.st==='wait'&&e>=0){c.st='dis';c.from=slot(c.z,c.i);flashes.push({x:c.from.x,y:c.from.y,t:t,col:c.hue});beep(600+c.i*40,.08)}
+  if(c.st==='dis'&&e>=DIS){c.st='tr';cntO--;cntT++;upd();log('Célula C'+(c.i+1)+' salió del origen → en tránsito')}
+  if(c.st==='tr'&&e>=DIS+TR){c.st='re'}
+  if(c.st==='re'&&e>=DIS+TR+RE){c.st='idle';c.z=c.dst;cntT--;cntD++;upd();const p=slot(c.z,c.i);flashes.push({x:p.x,y:p.y,t:t,col:'#00ff88',big:1});log('Célula C'+(c.i+1)+' llegó al destino ✓ ('+cntD+'/'+N+')');beep(900,.1);try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}}}
+ if(running&&cells.every(c=>c.st==='idle')){running=false;src=1-src;$('mkGo').disabled=false;log('✓ Transmisión completa: '+N+'/'+N+' llegaron, 0 perdidas (animación)');setTimeout(showModal,350)}}
+function hex(x,y,sz,rot,col,al){ctx.save();ctx.globalAlpha=al;ctx.translate(x,y);ctx.rotate(rot);ctx.strokeStyle=col;ctx.lineWidth=1.8;ctx.shadowBlur=10;ctx.shadowColor=col;ctx.beginPath();for(let k=0;k<6;k++){const a=k*Math.PI/3;ctx.lineTo(Math.cos(a)*sz,Math.sin(a)*sz)}ctx.closePath();ctx.stroke();ctx.fillStyle=col;ctx.beginPath();ctx.arc(sz*.35,0,sz*.25,0,TAU);ctx.fill();ctx.restore()}
+function ring(z,label,col,active){const{x,y}=Z[z];ctx.save();ctx.strokeStyle=col;ctx.globalAlpha=active?1:.45;ctx.lineWidth=2;ctx.setLineDash([6,5]);ctx.lineDashOffset=-time*20;ctx.shadowBlur=active?16:0;ctx.shadowColor=col;ctx.beginPath();ctx.arc(x,y,66,0,TAU);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=col;ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillText(label,x,y+(z?86:-76));ctx.font='bold 20px system-ui';ctx.fillText(z?'B':'A',x,y+7);ctx.restore()}
+function bez(a,b,u,w){const cx=200+w,cy=290;const m=1-u;return{x:m*m*a.x+2*m*u*cx+u*u*b.x,y:m*m*a.y+2*m*u*cy+u*u*b.y}}
+function merkaba(){ctx.save();ctx.translate(200,290);const s=.75;ctx.scale(s,s);
+ ctx.save();ctx.rotate(time*1.2);ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.globalAlpha=.6;ctx.beginPath();ctx.arc(0,0,85,0,TAU);ctx.stroke();ctx.restore();
+ ctx.save();ctx.rotate(-time*1.5);ctx.strokeStyle='#ffaa00';ctx.setLineDash([14,8]);ctx.lineWidth=2;ctx.globalAlpha=.6;ctx.beginPath();ctx.arc(0,0,105,0,TAU);ctx.stroke();ctx.restore();
+ const hc=admin?`hsl(${(time*60)%360},100%,60%)`:'#ffd700';
+ ctx.save();ctx.rotate(time*.4);ctx.strokeStyle=hc;ctx.lineWidth=2.5;ctx.shadowBlur=22;ctx.shadowColor=hc;for(let r=0;r<2;r++){ctx.beginPath();ctx.moveTo(0,-60);ctx.lineTo(-52,30);ctx.lineTo(52,30);ctx.closePath();ctx.stroke();ctx.rotate(Math.PI)}ctx.restore();
+ // doble hélice
+ for(let s2=0;s2<2;s2++){ctx.beginPath();for(let k=0;k<=40;k++){const yy=-130+k*6.5,xx=Math.sin(k*.35+time*2+s2*Math.PI)*16;k?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy)}ctx.strokeStyle=s2?'rgba(0,229,255,.35)':'rgba(255,215,0,.35)';ctx.lineWidth=1.5;ctx.stroke()}
+ ctx.restore()}
+function draw(now){const dt=Math.min(.05,(now-last)/1000);last=now;time+=dt*(mode==='fast'?2.5:mode==='rewind'?-1.2:mode==='freeze'?0:1);
+ step(now);const t=now/1000;
+ ctx.setTransform(1,0,0,1,0,0);const sc=Math.min(cv.width/W,cv.height/H);ctx.fillStyle='#020510';ctx.fillRect(0,0,cv.width,cv.height);
+ ctx.setTransform(sc,0,0,sc,(cv.width-W*sc)/2,(cv.height-H*sc)/2);
+ const g=ctx.createRadialGradient(200,290,10,200,290,320);g.addColorStop(0,'#102050');g.addColorStop(1,'#020510');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ merkaba();
+ const dst=running?cells[0].dst:1-src,org=1-dst;
+ ring(org,'ORIGEN','#ffd700',running);ring(dst,'DESTINO','#00ff88',running);
+ // túnel
+ if(running){ctx.save();const A=Z[org],B=Z[dst];for(let k=0;k<3;k++){ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.quadraticCurveTo(200+(k-1)*40,290,B.x,B.y);ctx.strokeStyle=`rgba(0,255,170,${.12+.08*Math.sin(t*12+k)})`;ctx.lineWidth=10-k*3;ctx.stroke()}ctx.restore()}
+ ctx.globalCompositeOperation='lighter';
+ for(const c of cells){const e=t-c.t0;
+  if(c.st==='idle'||c.st==='wait'){const p=slot(c.z,c.i);hex(p.x,p.y,11,time*2*(c.i%2?1:-1),c.hue,1);continue}
+  const A=c.from,B=slot(c.dst,c.i);
+  if(c.st==='dis'){const u=cl(e/DIS);hex(A.x,A.y,11*(1-u*.6),time*4,c.hue,1-u);
+   for(const p of c.P){const r=p.r*ease(u);const x=A.x+Math.cos(p.a+u*2)*r,y=A.y+Math.sin(p.a+u*2)*r;ctx.fillStyle=c.hue;ctx.globalAlpha=.9;ctx.fillRect(x-1.5,y-1.5,3,3)}}
+  else if(c.st==='tr'){const u=cl((e-DIS)/TR);
+   for(const p of c.P){const v=cl((u-p.l)/(1-p.l)),q=ease(v),pp=bez(A,B,q,p.w),pr=bez(A,B,ease(cl(v-.12)),p.w);ctx.globalAlpha=.85;ctx.strokeStyle=v>.5?'#00ff88':c.hue;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(pr.x,pr.y);ctx.lineTo(pp.x,pp.y);ctx.stroke()}
+   const h=bez(A,B,ease(u),0);ctx.globalAlpha=.9;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(h.x,h.y,3,0,TAU);ctx.fill()}
+  else if(c.st==='re'){const u=cl((e-DIS-TR)/RE);for(const p of c.P){const r=p.r*(1-ease(u));const x=B.x+Math.cos(p.a-u*2)*r,y=B.y+Math.sin(p.a-u*2)*r;ctx.fillStyle='#00ff88';ctx.globalAlpha=.9;ctx.fillRect(x-1.5,y-1.5,3,3)}hex(B.x,B.y,11*(.4+.6*u),time*4,c.hue,u)}}
+ flashes=flashes.filter(f=>t-f.t<.4);for(const f of flashes){const u=(t-f.t)/.4;ctx.globalAlpha=1-u;ctx.strokeStyle=f.col;ctx.lineWidth=f.big?3:2;ctx.beginPath();ctx.arc(f.x,f.y,6+u*(f.big?30:20),0,TAU);ctx.stroke()}
+ ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';requestAnimationFrame(draw)}
+function fasta(){let s=7,seq='';const b='ACGT';for(let i=0;i<180;i++){s=(Math.imul(s,1103515245)+12345)>>>0;seq+=b[(s>>>16)&3]}const lines=seq.match(/.{1,60}/g).join('\n');
+ return '>EJEMPLO_PHERSAA_MERKABA_v5 secuencia de ejemplo, no ADN real, no curada | generado '+new Date().toISOString()+'\n'+lines+'\n'}
+function showModal(){$('mkFasta').textContent=fasta();$('mkModal').style.display='block'}
+$('mkClose').onclick=()=>$('mkModal').style.display='none';
+$('mkDl').onclick=()=>{const b=new Blob([$('mkFasta').textContent],{type:'text/plain'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='PHERSAA_EJEMPLO_no_ADN_real_'+Date.now()+'.fasta';document.body.appendChild(a);a.click();a.remove()};
+window.mkShowFasta=showModal;
+fit();upd();requestAnimationFrame(draw);
+})();
+</script></body></html>
