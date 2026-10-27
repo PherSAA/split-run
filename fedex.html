@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PHERSAA FEDEX CUANTICO v2.0</title><style>body{margin:0;background:#020410;color:#fff;font-family:Arial;text-align:center;overflow:hidden}canvas{width:95vw;max-width:420px;aspect-ratio:1;border:2px solid #ffd700;border-radius:22px;margin:8px auto;display:block;box-shadow:0 0 40px rgba(255,215,0,0.4)}button{padding:12px 14px;margin:4px;border-radius:12px;border:2px solid;font-weight:900;cursor:pointer;font-size:11px}.f{background:#111;color:#ffaa00;border-color:#ffaa00}.r{background:#111;color:#ff4444;border-color:#ff4444}.h{background:#001a0f;color:#00ff88;border-color:#00ff88}.w{background:#0a0a2a;color:#88ccff;border-color:#88ccff}#log{font-size:11px;color:#aaa;margin:6px}</style></head><body>
+<h3>⚛️ PHERSAA • FEDEX CUÁNTICO v2.0 • MERKABA</h3>
+<canvas id="c" width="420" height="420"></canvas>
+<button class="r" onclick="setM('enfermo')">↻ ENFERMO</button>
+<button class="h" onclick="setM('cura')">↺ REWIND CURA</button>
+<button class="f" onclick="fedex()">⚡ FEDEX CUÁNTICO</button>
+<button class="w" onclick="wormhole=true;setTimeout(()=>wormhole=false,2000)">🌌 WORMHOLE</button>
+<div id="log">Estado: Listo para teletransportar info biológica • 100% Coherencia</div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),log=document.getElementById('log');
+let modo='sano',t=0,vida=1,wormhole=false,particulas=[],fedexAnim=0,fedexCell=0;
+function setM(m){modo=m; log.innerText=m=='enfermo'?'⚠️ Mutación activa - ADN dañado':m=='cura'?'💚 REWIND anti-horario - Restaurando información':'Sano';}
+function fedex(){if(fedexAnim>0)return; fedexAnim=0.001; fedexCell=Math.floor(Math.random()*5); log.innerText='⚛️ FEDEX: Desmaterializando célula '+fedexCell+' → Codificando en qubits |ψ⟩ → Teleportando...'; setTimeout(()=>{log.innerText='✅ FEDEX: Célula rematerializada en órbita '+((fedexCell+2)%5)+' - Información biológica intacta'; fedexAnim=0;},1800);}
+function draw(){
+ t+=0.025; ctx.clearRect(0,0,420,420);
+ ctx.fillStyle='#060a20'; ctx.fillRect(0,0,420,420);
+ // Estrellas
+ ctx.fillStyle='rgba(255,255,255,0.3)'; for(let i=0;i<30;i++){ctx.beginPath(); ctx.arc((Math.sin(i+t*0.1)*200+210),(Math.cos(i*1.3+t*0.05)*200+210),Math.random()*1.2,0,6.28); ctx.fill();}
+ ctx.save(); ctx.translate(210,210);
+ // Wormhole central
+ if(wormhole||fedexAnim>0){ctx.save(); ctx.rotate(t*5); let grd=ctx.createRadialGradient(0,0,5,0,0,80); grd.addColorStop(0,'#fff'); grd.addColorStop(0.3,'#88ccff'); grd.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=grd; ctx.beginPath(); ctx.arc(0,0,80+Math.sin(t*3)*10,0,6.28); ctx.fill(); ctx.strokeStyle='#88ccff'; ctx.lineWidth=2; for(let r=10;r<70;r+=15){ctx.beginPath(); ctx.arc(0,0,r,0,6.28); ctx.stroke();} ctx.restore();}
+ // Merkaba
+ ctx.save(); ctx.rotate(t*(modo=='cura'?-1.8:0.6)); ctx.shadowBlur=25; ctx.shadowColor=modo=='cura'?'#00ff88':'#ffd700'; ctx.strokeStyle=modo=='cura'?'#00ff88':'#ffd700'; ctx.lineWidth=2.2;
+ for(let k=0;k<2;k++){ctx.rotate(Math.PI); ctx.beginPath(); ctx.moveTo(0,-52); ctx.lineTo(-45,26); ctx.lineTo(45,26); ctx.closePath(); ctx.stroke();}
+ // Anillo toroidal doble
+ ctx.rotate(t*2); ctx.strokeStyle='rgba(255,215,0,0.5)'; ctx.beginPath(); ctx.arc(0,0,68,0,6.28); ctx.stroke(); ctx.rotate(t*-2.5); ctx.strokeStyle='rgba(0,255,180,0.4)'; ctx.beginPath(); ctx.arc(0,0,78,0,6.28); ctx.stroke();
+ ctx.restore();
+ // Células
+ for(let i=0;i<5;i++){
+  let isFedex = fedexAnim>0 && i==fedexCell;
+  let ang=i*72+t*28*(modo=='cura'?-1:1)+(isFedex?fedexAnim*180:0), rad=126-(isFedex?fedexAnim*80:0), x=Math.cos(ang*Math.PI/180)*rad, y=Math.sin(ang*Math.PI/180)*rad*0.82;
+  let alpha = isFedex ? 1-fedexAnim : 1; if(alpha<=0) continue;
+  ctx.save(); ctx.translate(x,y); ctx.globalAlpha=alpha; ctx.rotate(t*2.2);
+  // Partículas FedEx
+  if(isFedex){for(let p=0;p<8;p++){let px=(Math.random()-0.5)*40,py=(Math.random()-0.5)*40; ctx.fillStyle='rgba(255,215,0,'+(Math.random())+')'; ctx.beginPath(); ctx.arc(px,py,2,0,6.28); ctx.fill();}}
+  ctx.strokeStyle=modo=='enfermo'?'#ff4444':modo=='cura'?'#00ff88':'#00ffcc'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(0,0,20,0,6.28); ctx.stroke();
+  let col=modo=='enfermo'?'rgba(255,60,60,'+alpha+')':modo=='cura'?`rgba(${60},255,140,${alpha})`:`rgba(0,255,200,${alpha})`;
+  ctx.fillStyle=col; ctx.beginPath(); ctx.arc(0,0,15,0,6.28); ctx.fill();
+  // ADN ATCG
+  ctx.shadowBlur=0; ctx.fillStyle='#fff'; ctx.font='8px Arial'; ctx.fillText(modo=='enfermo'?'MUT':'ATCG',-10,3);
+  ctx.restore();
+ }
+ if(fedexAnim>0){fedexAnim=Math.min(0.999,fedexAnim+0.009);}
+ if(modo=='enfermo')vida=Math.max(0.1,vida-0.004); if(modo=='cura')vida=Math.min(1,vida+0.007);
+ ctx.restore();
+ requestAnimationFrame(draw);
+} draw();
+</script></body></html>
