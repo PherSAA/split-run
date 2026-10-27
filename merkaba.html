@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MERKABA CURA REWIND</title><style>body{margin:0;background:#020612;color:#fff;font-family:Arial;text-align:center}canvas{width:95vw;max-width:400px;aspect-ratio:1;border:2px solid #00ff88;border-radius:20px;margin:10px auto;display:block}button{padding:14px 22px;margin:6px;border-radius:12px;border:2px solid;font-weight:900;cursor:pointer}.rew{background:#111;color:#ff4444;border-color:#ff4444}.heal{background:#001a0f;color:#00ff88;border-color:#00ff88}</style></head><body>
+<h2>MERKABA • MODO CURA • REWIND</h2>
+<canvas id="c" width="400" height="400"></canvas>
+<button class="rew" onclick="modo='enfermo'">↻ MODO ENFERMO<br>Mutación</button>
+<button class="heal" onclick="modo='cura'">↺ MERKABA REWIND<br>Curar + Rejuvenecer</button>
+<p id="txt">Estado: Sano</p>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let modo='sano', t=0, vida=1;
+function draw(){
+ t+=0.02; ctx.clearRect(0,0,400,400);
+ // Fondo
+ ctx.fillStyle='#0a0f24'; ctx.fillRect(0,0,400,400);
+ ctx.save(); ctx.translate(200,200);
+ // Merkaba central
+ ctx.save(); ctx.rotate(t*(modo=='cura'?-1.5:0.5)); ctx.lineJoin='round';
+ ctx.strokeStyle=modo=='cura'?'#00ff88':'#ffcc33'; ctx.lineWidth=2; ctx.shadowBlur=20; ctx.shadowColor=ctx.strokeStyle;
+ for(let k=0;k<2;k++){ctx.rotate(Math.PI); ctx.beginPath(); ctx.moveTo(0,-50); ctx.lineTo(-43,25); ctx.lineTo(43,25); ctx.closePath(); ctx.stroke();}
+ ctx.restore();
+ // 5 células orbitando
+ for(let i=0;i<5;i++){
+  let ang=i*72+t*30*(modo=='cura'?-1:1), r=120, x=Math.cos(ang*Math.PI/180)*r, y=Math.sin(ang*Math.PI/180)*r*0.8;
+  ctx.save(); ctx.translate(x,y); ctx.rotate(t*2);
+  let color=modo=='enfermo'?'rgba(255,50,50,0.9)':modo=='cura'?`rgba(${Math.round(50+Math.sin(t+i)*50)},255,120,0.9)`:'rgba(0,255,180,0.8)';
+  // Anillo split
+  ctx.shadowBlur=0; ctx.lineWidth=2; ctx.strokeStyle=modo=='cura'?'#00ff88':'#ff4444'; ctx.beginPath(); ctx.arc(0,0,22,0,Math.PI*2); ctx.stroke();
+  // Célula
+  ctx.fillStyle=color; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill();
+  // ADN interno
+  ctx.shadowBlur=0; ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.beginPath(); for(let j=-6;j<6;j++){let o=Math.sin(j+t+i)*4; ctx.moveTo(o,-6); ctx.lineTo(o,6);} ctx.stroke();
+  ctx.restore();
+ }
+ // Texto vida
+ if(modo=='enfermo'){vida=Math.max(0,vida-0.005);} if(modo=='cura'){vida=Math.min(1,vida+0.008);}
+ ctx.restore();
+ document.getElementById('txt').innerText=modo=='enfermo'?`ENFERMANDO: ${(vida*100).toFixed(0)}% salud`:modo=='cura'?`REBOBINANDO TIEMPO: Curando ${(vida*100).toFixed(0)}%`:`SANO: ${ (vida*100).toFixed(0)}%`;
+ requestAnimationFrame(draw);
+} draw();
+</script></body></html>
