@@ -739,7 +739,7 @@ function reflect(x){const p=[],n=x.nota.toLowerCase();
  if(x.foco<=4)p.push('Foco bajo ('+x.foco+'/10): ¿qué te distrajo? Quizá una sola tarea pequeña.');else p.push('Foco '+x.foco+'/10: ¿qué te ayudó a concentrarte?');
  if(/alcohol|toque|fum|droga|marihuana|cannabis|porro|pastilla|coca|resaca|mal\b|malestar|mareo|dolor|n[aá]usea|v[oó]mit|enferm/.test(n))p.push('Si te sientes mal, habla con un profesional de salud.');
  $('dkRef').innerHTML=p.map(s=>'• '+s).join('<br>')}
-const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&','<':'<','>':'>'})[c]);
+const esc=s=>String(s).replace(/[&<>]/g,c=>'&'+'#'+c.charCodeAt(0)+';');
 function render(){const c=chain();$('dkN').textContent=c.length+' entradas';$('dkLog').innerHTML=c.length?c.slice(-6).reverse().map(x=>`#${x.i} · ${new Date(x.ts).toLocaleString('es')} · ${esc(x.t)} · ${esc(x.postura)} · E${x.energia} F${x.foco} · ${esc(String(x.nota).slice(0,50))}<br><span style="opacity:.6">${String(x.hash).slice(0,24)}…</span>`).join('<br>'):'—'}
 $('dkVer').onclick=async()=>{let c,bad=null,why='';try{c=chain()}catch(e){c=[];bad=0;why='datos ilegibles'}
  let prev=G;for(const x of c){if(bad!==null)break;
