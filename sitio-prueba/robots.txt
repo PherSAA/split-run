@@ -1,0 +1,6 @@
+# VERSIÓN DE PRUEBA: no indexar. Al publicar en el dominio final, cambiar a "Allow: /"
+# y mover este archivo a la raíz del dominio (los buscadores solo leen /robots.txt).
+User-agent: *
+Disallow: /
+
+Sitemap: https://phersaa.github.io/split-run/sitio-prueba/sitemap.xml

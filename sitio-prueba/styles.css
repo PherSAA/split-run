@@ -1,0 +1,42 @@
+/* Phenom · tokens de color compartidos (extraídos del logo: brand/phenom-logo.svg) */
+:root{
+  --orange:#FF8A00;   /* león */
+  --red:#F2382F;      /* texto "Phenom" del logo */
+  --red-ink:#FF6B63;  /* rojo aclarado para texto pequeño sobre fondo oscuro (contraste AA) */
+  --bg:#0b0b0f; --bg2:#111118; --card:#16161e; --line:#2c2c39;
+  --text:#f5f2ed; --soft:#d6d2dd; --muted:#b4b0c0; --ink:#160900;
+  --warn-bg:#FFD500; --warn-ink:#000;
+  --radius:16px; --max:720px;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.55 var(--font);background:var(--bg);color:var(--text)}
+a{color:var(--orange)}a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.prueba{background:var(--warn-bg);color:var(--warn-ink);font-weight:800;text-align:center;padding:8px 12px;font-size:14px}
+header.top{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);max-width:var(--max);margin:0 auto}
+header.top a.marca{display:flex;align-items:center;gap:10px;text-decoration:none}
+header.top img{width:44px;height:44px;display:block}
+.nombre{color:var(--red);font-weight:500;letter-spacing:.28em;font-size:20px}
+nav.top{margin-left:auto;display:flex;gap:12px;font-size:14px}nav.top a{color:var(--soft);text-decoration:none;padding:10px 0}
+main{max-width:var(--max);margin:0 auto;padding:0 16px 96px}
+.hero{text-align:center;padding:28px 0 8px}
+.hero img{width:180px;height:180px}
+h1{font-size:32px;line-height:1.15;margin:12px 0 8px}h2{font-size:24px;margin:36px 0 10px}h3{font-size:18px;margin:18px 0 6px}
+.lead{color:var(--soft);font-size:18px;margin:0 auto 18px;max-width:34em}
+.btn{display:block;width:100%;text-align:center;padding:16px;border-radius:14px;font-weight:900;font-size:18px;text-decoration:none;border:0;font-family:inherit;cursor:pointer;min-height:48px}
+.btn-main{background:var(--orange);color:var(--ink)}
+.btn-ws{background:#1F7A4D;color:#fff;margin-top:10px}
+.btn[aria-disabled=true],.btn:disabled{background:#2a2a33;color:var(--muted);cursor:not-allowed}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:12px 0}
+.precio{font-size:40px;font-weight:900;color:var(--orange)}
+.nota{font-size:14px;color:var(--muted)}
+ol.pasos{padding-left:22px}ol.pasos li{margin:8px 0}
+.etq{display:inline-block;font-size:12px;font-weight:800;border:1px solid var(--line);border-radius:999px;padding:2px 8px;color:var(--soft)}
+.borrador{border:2px dashed var(--red);color:var(--red-ink);font-weight:800;padding:10px;border-radius:12px;margin:16px 0}
+footer{border-top:1px solid var(--line);max-width:var(--max);margin:0 auto;padding:16px;font-size:14px;color:var(--muted)}
+footer a{color:var(--soft);margin-right:12px;display:inline-block;padding:6px 0}
+.fijo{position:fixed;left:0;right:0;bottom:0;background:rgba(11,11,15,.96);border-top:1px solid var(--line);padding:8px 12px}
+.fijo .btn{margin:0 auto;max-width:var(--max)}
+.legal h2{font-size:20px}.legal p,.legal li{color:var(--soft)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
