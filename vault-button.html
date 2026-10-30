@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>Vaúlt Xpay · Botón</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Cormorant+Garamond:ital,wght@1,600&display=swap');
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;background:radial-gradient(circle at 50% 35%,#2a1d06,#0a0703 70%);overflow:hidden;font-family:'Cormorant Garamond',serif;color:#f5d98b;touch-action:manipulation}
+h1{margin:0;font-family:'Cinzel',serif;font-size:30px;letter-spacing:10px;color:#ffe9a8;text-shadow:0 0 18px rgba(255,190,50,.55)}
+.sub{font-style:italic;font-size:22px;letter-spacing:3px;opacity:.85;margin-top:-22px}
+.wrap{position:relative;width:min(78vw,320px);height:min(78vw,320px)}
+.halo{position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,rgba(255,190,50,.45),transparent 65%);filter:blur(10px);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08);opacity:.75}}
+.shadow{position:absolute;left:8%;right:8%;bottom:-14px;height:34px;border-radius:50%;background:rgba(0,0,0,.65);filter:blur(12px);transition:transform .09s ease-out,opacity .09s}
+.btn{position:absolute;inset:0;border-radius:50%;border:0;cursor:pointer;padding:0;
+background:
+radial-gradient(circle at 34% 24%,rgba(255,255,255,.85) 0,rgba(255,255,255,0) 22%),
+radial-gradient(circle at 50% 120%,#7a4a00 0,rgba(122,74,0,0) 55%),
+radial-gradient(circle at 50% 38%,#ffe27a,#f2b72b 48%,#c2840b 80%,#8a5600);
+box-shadow:inset 0 -14px 22px rgba(120,66,0,.65),inset 0 12px 18px rgba(255,248,200,.9),inset 0 0 0 3px rgba(255,236,150,.6),0 14px 0 #7d4d00,0 22px 26px rgba(0,0,0,.6);
+transform:translateY(0) scale(1);transition:transform .45s cubic-bezier(.2,2.2,.35,.9),box-shadow .45s cubic-bezier(.2,2.2,.35,.9);will-change:transform;overflow:hidden}
+.btn::before{content:"";position:absolute;inset:0;border-radius:50%;opacity:.38;mix-blend-mode:multiply;filter:url(#grain);background:#d9a020}
+.btn::after{content:"";position:absolute;left:14%;top:7%;width:46%;height:26%;border-radius:50%;background:linear-gradient(#fff,rgba(255,255,255,0));opacity:.7;filter:blur(2px)}
+.btn.down{transform:translateY(12px) scale(.93,.9);transition:transform .07s ease-out,box-shadow .07s ease-out;
+box-shadow:inset 0 -6px 16px rgba(120,66,0,.8),inset 0 18px 30px rgba(110,60,0,.55),inset 0 0 0 3px rgba(255,236,150,.4),0 2px 0 #7d4d00,0 6px 12px rgba(0,0,0,.6)}
+.label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Cinzel',serif;color:#6b3f00;text-shadow:0 2px 0 rgba(255,240,170,.8),0 -1px 0 rgba(90,50,0,.5);pointer-events:none;line-height:1.05;text-align:center}
+.label b{font-size:min(11vw,46px);letter-spacing:5px}.label small{font-size:min(5vw,19px);letter-spacing:9px;margin-top:6px}
+.ring{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(255,230,140,.9);pointer-events:none;animation:ring .7s ease-out forwards}
+@keyframes ring{to{transform:scale(1.7);opacity:0}}
+.sp{position:absolute;width:10px;height:10px;pointer-events:none;background:#fff6c4;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);filter:drop-shadow(0 0 6px #ffc83a)}
+.cnt{font-family:'Cinzel',serif;letter-spacing:4px;font-size:15px;color:#e8c46a;opacity:.9}
+.hint{font-size:16px;opacity:.55;font-style:italic}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="4"/><feColorMatrix values="0 0 0 0 .6  0 0 0 0 .4  0 0 0 0 .05  0 0 0 1.4 -.2"/></filter></svg>
+<h1>VAÚLT XPAY</h1><div class="sub">Save your funds in the Vaúlt.</div>
+<div class="wrap"><div class="halo"></div><div class="shadow" id="sh"></div>
+<button class="btn" id="b" aria-label="Guardar en la Vaúlt"><div class="label"><b>VAÚLT</b><small>XPAY</small></div></button></div>
+<div class="cnt" id="cnt">GUARDADOS: 0</div><div class="hint">Presiona y suelta</div>
+<script>
+const b=document.getElementById('b'),sh=document.getElementById('sh'),w=b.parentElement,cnt=document.getElementById('cnt');let n=0,ac=null;
+function snd(down){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='sine';
+if(down){o.frequency.setValueAtTime(260,t);o.frequency.exponentialRampToValueAtTime(90,t+.09);g.gain.setValueAtTime(.35,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.13)}
+else{o.frequency.setValueAtTime(520,t);o.frequency.exponentialRampToValueAtTime(1100,t+.08);g.gain.setValueAtTime(.22,t);g.gain.exponentialRampToValueAtTime(.001,t+.18);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.2);
+const o2=ac.createOscillator(),g2=ac.createGain();o2.type='triangle';o2.frequency.setValueAtTime(1760,t+.03);g2.gain.setValueAtTime(.1,t+.03);g2.gain.exponentialRampToValueAtTime(.001,t+.25);o2.connect(g2);g2.connect(ac.destination);o2.start(t+.03);o2.stop(t+.27)}}catch(e){}}
+function down(){b.classList.add('down');sh.style.transform='scaleX(.8)';sh.style.opacity='.5';snd(true);if(navigator.vibrate)navigator.vibrate(12)}
+function up(){if(!b.classList.contains('down'))return;b.classList.remove('down');sh.style.transform='';sh.style.opacity='';snd(false);if(navigator.vibrate)navigator.vibrate([8,30,14]);
+n++;cnt.textContent='GUARDADOS: '+n;const r=document.createElement('div');r.className='ring';w.appendChild(r);setTimeout(()=>r.remove(),750);
+for(let i=0;i<14;i++){const s=document.createElement('div');s.className='sp';const a=Math.random()*6.28,d=110+Math.random()*90,sz=6+Math.random()*12;s.style.cssText+=`width:${sz}px;height:${sz}px;left:calc(50% - ${sz/2}px);top:calc(50% - ${sz/2}px)`;w.appendChild(s);
+s.animate([{transform:'translate(0,0) scale(1) rotate(0)',opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d-30}px) scale(.2) rotate(180deg)`,opacity:0}],{duration:600+Math.random()*300,easing:'cubic-bezier(.1,.7,.3,1)'}).onfinish=()=>s.remove()}}
+b.addEventListener('pointerdown',e=>{e.preventDefault();down()});['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,up));
+b.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat)down()});b.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')up()});
+</script></body></html>
