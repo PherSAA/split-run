@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phenom Deli · ventas sin internet (versión de prueba)</title>
+<meta name="description" content="Para bodegas y delis: el celular anota ventas aunque se caiga el internet, con recibo sellado y auditoría de inventario. Piloto gratis, versión de prueba.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://phersaa.github.io/split-run/sitio-prueba/deli.html">
+<meta name="theme-color" content="#0b0b0f">
+<meta property="og:type" content="website"><meta property="og:locale" content="es_US">
+<meta property="og:site_name" content="Phenom"><meta property="og:title" content="Phenom Deli · ventas sin internet (versión de prueba)">
+<meta property="og:description" content="Para bodegas y delis: el celular anota ventas aunque se caiga el internet, con recibo sellado y auditoría de inventario. Piloto gratis, versión de prueba."><meta property="og:url" content="https://phersaa.github.io/split-run/sitio-prueba/deli.html">
+<meta property="og:image" content="https://phersaa.github.io/split-run/sitio-prueba/og-phenom-prueba.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo de Phenom: león naranja y la palabra Phenom en rojo">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="brand/phenom-logo.svg"><link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+</head><body>
+<div class="prueba" role="note">VERSIÓN DE PRUEBA · no es el sitio publicado · sin pagos reales</div>
+<header class="top"><a class="marca" href="index.html" aria-label="Phenom, inicio"><img src="brand/phenom-logo.svg" alt="Logo de Phenom" width="44" height="44"><span class="nombre">Phenom</span></a>
+<nav class="top" aria-label="Principal"><a href="index.html#como">Cómo funciona</a><a href="index.html#foto">$1 foto</a></nav></header>
+<main>
+<section class="hero" style="padding-top:18px">
+<p class="etq">Para bodegas y delis · piloto</p>
+<h1>Tu celular anota las ventas aunque se caiga el internet</h1>
+<p class="lead">Con recibo sellado y auditoría de inventario.</p>
+<a class="btn btn-ws" data-ws="Quiero el piloto · WhatsApp" aria-disabled="true">WhatsApp · número pendiente</a>
+</section>
+<section aria-labelledby="t-ben"><h2 id="t-ben">3 beneficios</h2>
+<ol class="pasos">
+<li><b>Sigue anotando sin internet.</b> La venta queda guardada en el teléfono y se marca como pendiente de cobro hasta que se confirme el pago.</li>
+<li><b>Recibo sellado.</b> Cada ticket lleva una huella SHA-256: si alguien cambia el pedido en el camino a la cocina, se nota.</li>
+<li><b>Auditoría de inventario.</b> Cuentas lo que hay en el estante y ves el faltante en dinero; cada conteo queda encadenado y se puede verificar.</li>
+</ol></section>
+<section aria-labelledby="t-pil"><h2 id="t-pil">Cómo funciona el piloto</h2>
+<ul><li>1 mes gratis con 2 o 3 negocios.</li><li>Empezamos con datos de ejemplo; tú decides cuándo usar tu propio catálogo.</li><li>Sin cobros reales durante el piloto.</li><li>Al final nos dices qué sirvió y qué no.</li></ul>
+<div class="card"><h3 style="margin-top:0">Pedir el piloto</h3>
+<p class="nota">Este formulario no guarda nada: solo arma un mensaje de WhatsApp que tú decides enviar.</p>
+<label for="pNeg">Nombre del negocio</label><input id="pNeg" autocomplete="organization" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font:inherit;margin:4px 0 10px">
+<label for="pBarrio">Barrio o ciudad</label><input id="pBarrio" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font:inherit;margin:4px 0 10px">
+<a class="btn btn-ws" id="pilotoWs" data-ws="Enviar por WhatsApp" aria-disabled="true">WhatsApp · número pendiente</a>
+</div></section>
+<section aria-labelledby="t-demo"><h2 id="t-demo">Pruébalo</h2>
+<p><a class="btn btn-main" href="../phenom-v1.16.html#deli">Demo con datos de ejemplo</a></p>
+<p class="nota">La demo usa un catálogo de ejemplo y un cobro simulado. No mueve dinero.</p></section>
+<section aria-labelledby="t-precio"><h2 id="t-precio">Precio</h2><p><b>Por definir.</b> Durante el piloto no se cobra nada.</p></section>
+<div class="card" style="border-color:var(--red)"><h2 style="margin-top:0">Qué NO es</h2><ul><li>No es Tap to Pay ni cobra con tarjeta todavía.</li><li>Sin internet, una venta es <b>venta pendiente de cobro</b>, no dinero recibido.</li><li>No prometemos pagos sin comisión: toda tarjeta tiene comisión del procesador.</li><li>No reemplaza a tu contador ni a tu caja registradora oficial.</li></ul></div>
+<script>
+(function(){var b=document.getElementById('pilotoWs');function upd(){var c=window.PHENOM_CONFIG||{};var n=(c.WHATSAPP||'').replace(/\D/g,'');if(n.length<8)return;
+var t='Hola Phenom, quiero el piloto del Deli. Negocio: '+document.getElementById('pNeg').value.trim()+'. Barrio: '+document.getElementById('pBarrio').value.trim()+'.';
+b.href='https://wa.me/'+n+'?text='+encodeURIComponent(t)}
+['pNeg','pBarrio'].forEach(function(i){document.getElementById(i).addEventListener('input',upd)});window.addEventListener('load',upd)})();
+</script>
+</main>
+<footer><nav aria-label="Legal"><a href="terminos.html">Términos</a><a href="privacidad.html">Privacidad</a><a href="reembolso.html">Reembolsos</a><a href="index.html#laboratorio">Laboratorio</a></nav>
+<p>Phenom · versión de prueba. Los textos legales son borradores.</p></footer>
+<div class="fijo"><a class="btn btn-ws" data-ws="Escríbenos por WhatsApp" aria-disabled="true">WhatsApp · número pendiente</a></div>
+<script src="config.js" defer></script>
+</body></html>
