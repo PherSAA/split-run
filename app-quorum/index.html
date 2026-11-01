@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phenom · Quórum 2 de 3 (versión de prueba)</title>
+<meta name="description" content="Phenom, versión de prueba: un grupo de 3 células verifica un informe sellado por quórum 2 de 3. Datos de ejemplo.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="top"><span class="pill sm">Versión de prueba · datos de ejemplo</span><span class="lang" aria-label="Idioma: español">ES</span></div>
+<header class="hd">
+  <a href="#grupo" class="brand"><img src="icons/phenom-logo.svg" alt="" width="40" height="40"><span>PHENOM</span></a>
+  <button id="menuBtn" class="menu" aria-expanded="false" aria-controls="nav" aria-label="Menú"><span></span><span></span><span></span></button>
+</header>
+<nav id="nav" hidden aria-label="Secciones">
+  <a href="#grupo">Grupo</a><a href="#acta">Acta</a><a href="#prueba">Qué prueba</a><a href="#falta">Qué falta</a><a href="docs/QUORUM.md">Documento</a>
+  <p class="grp">Más</p>
+  <a href="../app-llave-real/">La llave real</a><a href="../historia-llave/">Historia de la llave</a>
+</nav>
+<main id="main">
+
+<section class="screen" data-screen="grupo">
+  <p class="lbl">Grupo de 3 · quórum 2 de 3</p>
+  <h1>Dos de tres deciden.</h1>
+  <p class="lead">Un informe sellado viaja en piezas a tres células. Cada una lo revisa sola y firma su voto con su propia llave.</p>
+  <p class="muted">Mismo dispositivo, no son 3 teléfonos: son 3 Web Workers aislados, cada uno con su llave, su llavero y su memoria.</p>
+  <div class="choose"><button type="button" data-tipo="obra" aria-pressed="true">Informe de obra</button><button type="button" data-tipo="techo" aria-pressed="false">Garantía de techo</button></div>
+  <div class="cells" id="cells">
+    <div class="cell" data-c="A"><b>Célula A</b><span class="fp" data-fp>…</span><span class="st">en espera</span><label><input type="checkbox" data-down> caída</label><label><input type="checkbox" data-miente> miente</label></div>
+    <div class="cell" data-c="B"><b>Célula B</b><span class="fp" data-fp>…</span><span class="st">en espera</span><label><input type="checkbox" data-down> caída</label><label><input type="checkbox" data-miente> miente</label></div>
+    <div class="cell" data-c="C"><b>Célula C</b><span class="fp" data-fp>…</span><span class="st">en espera</span><label><input type="checkbox" data-down> caída</label><label><input type="checkbox" data-miente> miente</label></div>
+  </div>
+  <div class="big">
+    <button class="pill" id="bSellar" type="button">Sellar informe</button>
+    <button class="pill" id="bEnviar" type="button" disabled>Enviar al grupo y votar</button>
+  </div>
+  <span class="chip" id="qChip">Sin votación</span>
+  <p class="muted" id="qInfo" aria-live="polite">Pulsa Sellar informe.</p>
+  <div class="att">
+    <p class="lbl">Pruebas</p>
+    <button class="lnk" id="tUna" type="button">Tirar una célula</button>
+    <button class="lnk" id="tDos" type="button">Tirar dos</button>
+    <button class="lnk" id="tMiente" type="button">Hacer que una célula mienta</button>
+    <button class="lnk" id="tAlterar" type="button">Alterar informe</button>
+    <button class="lnk" id="tRepetir" type="button">Repetir el mismo informe</button>
+    <button class="lnk" id="tRevocar" type="button">Revocar la llave del emisor</button>
+    <button class="lnk" id="tReset" type="button">Restablecer</button>
+  </div>
+  <p class="muted">Emisor: <span class="fp" id="eFp">…</span>. La reserva E no se usa en esta demo.</p>
+</section>
+
+<section class="screen" data-screen="acta" hidden>
+  <p class="lbl">Acta de la votación</p>
+  <h1>El acta.</h1>
+  <span class="chip" id="aChip">Sin acta</span>
+  <div class="tabs" role="tablist"><button role="tab" data-t="s" aria-selected="true">Simple</button><button role="tab" data-t="d" aria-selected="false">Detallado</button><button role="tab" data-t="b" aria-selected="false">En bruto</button></div>
+  <div class="view" data-p="s"><p class="muted">Primero haz una votación.</p></div><div class="view" data-p="d" hidden></div><div class="view" data-p="b" hidden></div>
+  <div class="acts"><button class="pill ghost" id="bExport" type="button" disabled>Exportar acta (JSON)</button></div>
+  <p class="muted">Se verifica fuera de la app con <code>node verify-acta.mjs acta.json</code> (script en docs).</p>
+</section>
+
+<section class="screen" data-screen="prueba" hidden>
+  <p class="lbl">Honestidad</p>
+  <h1>Qué prueba y qué NO prueba.</h1>
+  <p class="lbl">Prueba</p>
+  <ul class="rows"><li><p>Una sola célula caída o que miente no decide el resultado.</p></li><li><p>Cada voto está firmado: un voto con firma falsa no cuenta.</p></li><li><p>El informe no cambió, su emisor es conocido y no revocado, y no es una repetición.</p></li></ul>
+  <p class="lbl">NO prueba</p>
+  <ul class="rows" id="noPrueba"><li><p>Que las tres células sean organizaciones independientes: mismo dispositivo y mismo código.</p></li><li><p>Que el contenido del informe sea verdad.</p></li><li><p>Que dos células de acuerdo para mentir sean atrapadas: con 2 de 3 ganan ellas.</p></li><li><p>Funcionamiento en 3 teléfonos reales: no probado.</p></li><li><p>Valor legal.</p></li></ul>
+  <p class="muted">Coste: cada informe se revisa 3 veces (3× CPU).</p>
+</section>
+
+<section class="screen" data-screen="falta" hidden>
+  <p class="lbl">Plan</p>
+  <h1>Qué falta.</h1>
+  <ul class="rows" id="faltaLista"></ul>
+</section>
+
+</main>
+<footer class="ft">Versión de prueba · datos de ejemplo · <a href="docs/QUORUM.md">Cómo funciona</a></footer>
+<div id="toast" role="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
