@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phenom · Prueba con 2 teléfonos (versión de prueba)</title>
+<meta name="description" content="Phenom, versión de prueba: un teléfono sella un informe y lo envía por piezas a otro teléfono por WebRTC. Datos de ejemplo.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="top"><span class="pill sm">Versión de prueba · datos de ejemplo</span><span class="lang" aria-label="Idioma: español">ES</span></div>
+<header class="hd">
+  <a href="#inicio" class="brand"><img src="icons/phenom-logo.svg" alt="" width="40" height="40"><span>PHENOM</span></a>
+  <button id="menuBtn" class="menu" aria-expanded="false" aria-controls="nav" aria-label="Menú"><span></span><span></span><span></span></button>
+</header>
+<nav id="nav" hidden aria-label="Secciones">
+  <a href="#inicio">Inicio</a><a href="#emisor">Teléfono A · Emisor</a><a href="#receptor">Teléfono B · Receptor</a><a href="#guia">Guía de prueba</a><a href="#registro">Registro de conexión</a>
+  <p class="grp">Más</p>
+  <a href="#limites">Límites honestos</a><a href="docs/DOS-TELEFONOS.md">Cómo funciona (documento)</a><a href="../app-llave-real/">La llave real</a><a href="../app-quorum/">Quórum</a>
+</nav>
+<main id="main">
+
+<section class="screen" data-screen="inicio">
+  <p class="lbl">Dos teléfonos · prueba real</p>
+  <h1>De un teléfono a otro.</h1>
+  <p class="lead">El teléfono A sella un informe y lo envía por piezas, directo, al teléfono B. B lo verifica y devuelve un acuse firmado con su propia llave.</p>
+  <p class="lbl">¿Qué teléfono es este?</p>
+  <div class="choose"><a class="pill" href="#emisor" id="irA">A · Emisor</a><a class="pill ghost" href="#receptor" id="irB">B · Receptor</a></div>
+  <p class="muted">Tu llave de este teléfono: <span class="fp" id="yoFp">…</span></p>
+  <ul class="rows">
+    <li><p class="lbl">01 · Conectar</p><p>A muestra un código (QR o texto). B lo lee y devuelve un código de respuesta. A lo pega.</p></li>
+    <li><p class="lbl">02 · Enviar</p><p>A envía las piezas. Si se pierden, B pide solo las que faltan.</p></li>
+    <li><p class="lbl">03 · Verificar y acusar</p><p>B muestra Verificado ✓ o ROTA ✗ y firma un acuse. A comprueba el acuse.</p></li>
+  </ul>
+  <p class="muted">Aún no probado en teléfonos reales: solo en navegadores de escritorio y emulados. <a href="#limites">Ver límites</a>.</p>
+</section>
+
+<section class="screen" data-screen="emisor" hidden>
+  <p class="lbl">Teléfono A · Emisor</p>
+  <h1>Sellar y enviar.</h1>
+  <p class="lbl">1 · Conectar</p>
+  <span class="chip" id="aEstado">Sin conexión</span>
+  <div class="big"><button class="pill" id="aCrear" type="button">Crear código de conexión</button></div>
+  <div id="aOferta" hidden>
+    <p class="muted">Muestra este QR al teléfono B o compártele el texto.</p>
+    <canvas class="qr" id="aQr" width="10" height="10" role="img" aria-label="Código QR de conexión"></canvas>
+    <p class="muted" id="aQrInfo"></p>
+    <label class="muted">Código de conexión<textarea class="code" id="aCod" readonly></textarea></label>
+    <div><button class="pill ghost" id="aCopiar" type="button">Copiar código</button><button class="pill ghost" id="aCompartir" type="button">Compartir…</button></div>
+    <label class="muted">Pega aquí el código de respuesta de B<textarea class="code" id="aResp"></textarea></label>
+    <button class="pill" id="aConectar" type="button">Conectar</button><button class="lnk" id="aEscanear" type="button" hidden>Escanear QR de B</button>
+  </div>
+  <p class="muted">Receptor: <span class="fp" id="aPeerFp">—</span></p>
+  <p class="lbl">2 · Informe</p>
+  <div class="choose"><button type="button" data-tipo="obra" aria-pressed="true">Obra</button><button type="button" data-tipo="techo" aria-pressed="false">Techo</button></div>
+  <form id="fForm" onsubmit="return false">
+    <div data-solo="obra"><label>Obra<input id="oObra" value="Remodelación cocina · ejemplo"></label>
+    <label>Avance (%)<input id="oAvance" type="number" value="60"></label>
+    <label>Nota<input id="oNota" value="Instalación eléctrica revisada."></label></div>
+    <div data-solo="techo" hidden><label>Cliente<input id="tCli" value="Cliente de ejemplo"></label>
+    <label>Trabajo<input id="tTrab" value="Reparación de goteras en área de 20 m²"></label>
+    <label>Años de garantía<input id="tAnos" type="number" value="5"></label></div>
+  </form>
+  <div class="big">
+    <button class="pill" id="aSellar" type="button">Sellar</button>
+    <button class="pill" id="aEnviar" type="button" disabled>Enviar a B</button>
+  </div>
+  <label class="sw"><input type="checkbox" id="aCortar"> Cortar conexión (prueba: se pierden piezas en el primer envío)</label>
+  <div class="pieces" id="aPiezas" aria-label="Piezas enviadas"></div>
+  <p class="muted" id="aInfo" aria-live="polite">Conecta con B y sella un informe.</p>
+  <span class="chip" id="aAcuse">Sin acuse</span>
+  <p class="muted" id="aAcuseInfo"></p>
+  <div class="att">
+    <p class="lbl">Pruebas de ataque</p>
+    <button class="lnk" id="aAlterar" type="button" disabled>Enviar con un dato alterado</button>
+    <button class="lnk" id="aDesconocida" type="button">Enviar firmado con llave desconocida</button>
+    <button class="lnk" id="aRepetir" type="button" disabled>Repetir el mismo informe</button>
+    <button class="lnk" id="aContinuar" type="button" disabled>Continuar envío (tras reconectar)</button>
+  </div>
+</section>
+
+<section class="screen" data-screen="receptor" hidden>
+  <p class="lbl">Teléfono B · Receptor</p>
+  <h1>Recibir y verificar.</h1>
+  <p class="lbl">1 · Conectar</p>
+  <span class="chip" id="bEstado">Sin conexión</span>
+  <label class="muted">Pega el código de A (o escanéalo)<textarea class="code" id="bCod"></textarea></label>
+  <button class="pill" id="bResponder" type="button">Crear respuesta</button><button class="lnk" id="bEscanear" type="button" hidden>Escanear QR de A</button>
+  <p class="muted" id="bScanInfo"></p>
+  <video id="bVideo" playsinline muted hidden></video>
+  <div id="bRespuesta" hidden>
+    <p class="muted">Muestra este QR al teléfono A o compártele el texto.</p>
+    <canvas class="qr" id="bQr" width="10" height="10" role="img" aria-label="Código QR de respuesta"></canvas>
+    <label class="muted">Código de respuesta<textarea class="code" id="bResp" readonly></textarea></label>
+    <div><button class="pill ghost" id="bCopiar" type="button">Copiar respuesta</button><button class="pill ghost" id="bCompartir" type="button">Compartir…</button></div>
+  </div>
+  <p class="lbl">2 · Emisor</p>
+  <p class="muted">Huella del emisor: <span class="fp" id="bPeerFp">—</span>. Compárala con la que A ve en su pantalla de inicio.</p>
+  <button class="pill ghost" id="bConfiar" type="button" disabled>Confiar en este emisor</button>
+  <button class="lnk" id="bRevocar" type="button" disabled>Revocar su llave</button>
+  <label class="sw"><input type="checkbox" id="bAuto" checked> Pedir automáticamente solo las piezas que faltan</label>
+  <p class="lbl">3 · Piezas</p>
+  <div class="pieces" id="bPiezas" aria-label="Piezas recibidas"></div>
+  <p class="muted" id="bInfo" aria-live="polite">Esperando piezas…</p>
+  <button class="pill ghost" id="bPedir" type="button" hidden>Reenviar solo las que faltan</button>
+  <div id="res" hidden>
+    <span class="chip" id="resChip">—</span>
+    <div class="tabs" role="tablist"><button role="tab" data-t="s" aria-selected="true">Simple</button><button role="tab" data-t="d" aria-selected="false">Detallado</button><button role="tab" data-t="b" aria-selected="false">En bruto</button></div>
+    <div class="view" data-p="s"></div><div class="view" data-p="d" hidden></div><div class="view" data-p="b" hidden></div>
+    <p class="muted" id="bAcuse"></p>
+  </div>
+</section>
+
+<section class="screen" data-screen="registro" hidden>
+  <p class="lbl">Registro de conexión</p>
+  <h1>Qué pasó, con hora.</h1>
+  <p class="muted">Conexión, estado ICE, tipo de candidato (sin direcciones IP) y bytes. Cópialo y pégalo en el chat después de una prueba real.</p>
+  <dl class="kv"><dt>Estado</dt><dd id="gEstado">—</dd><dt>Bytes enviados</dt><dd id="gTx">0</dd><dt>Bytes recibidos</dt><dd id="gRx">0</dd></dl>
+  <div class="acts"><button class="pill" id="gCopiar" type="button">Copiar registro de prueba</button><button class="lnk" id="gBorrar" type="button">Borrar registro</button></div>
+  <pre class="reg" id="gLog"></pre>
+</section>
+
+<section class="screen" data-screen="guia" hidden>
+  <p class="lbl">Guía de prueba</p>
+  <h1>Paso a paso con 2 teléfonos.</h1>
+  <ol class="rows" id="pasos">
+    <li class="step"><p>Abre esta página en los dos teléfonos (misma dirección). Si es la primera vez, espera a que cargue completa.</p></li>
+    <li class="step"><p>Teléfono A: toca <b>A · Emisor</b> y luego <b>Crear código de conexión</b>. Espera unos segundos a que aparezca el QR.</p></li>
+    <li class="step"><p>Teléfono B: toca <b>B · Receptor</b>. Escanea el QR de A (si tu navegador lo permite) o pega el código que A te compartió. Toca <b>Crear respuesta</b>.</p></li>
+    <li class="step"><p>Teléfono A: escanea o pega la respuesta de B y toca <b>Conectar</b>. Ambos deben decir «Conectado».</p></li>
+    <li class="step"><p>Teléfono B: compara la huella del emisor con la que A ve en su pantalla de inicio. Si coincide, toca <b>Confiar en este emisor</b>.</p></li>
+    <li class="step"><p>Teléfono A: toca <b>Sellar</b> y luego <b>Enviar a B</b>. B debe mostrar <b>Verificado ✓</b> y A debe mostrar <b>Acuse verificado ✓</b>.</p></li>
+    <li class="step"><p>En cada teléfono: abre <b>Registro de conexión</b>, toca <b>Copiar registro de prueba</b> y pégalo en el chat.</p></li>
+  </ol>
+  <p class="lbl">Casos a probar</p>
+  <div id="casos"></div>
+  <div class="acts"><button class="pill" id="cCopiar" type="button">Copiar resultados y registro</button></div>
+  <p class="muted">Las notas se guardan solo en este teléfono.</p>
+</section>
+
+<section class="screen" data-screen="limites" hidden>
+  <p class="lbl">Honestidad</p>
+  <h1>Límites.</h1>
+  <ul class="rows" id="limLista">
+    <li><p>Probado solo en navegadores de escritorio y emulados (dos ventanas en una misma máquina). Aún no en dos teléfonos reales: esa es esta prueba.</p></li>
+    <li><p>Para atravesar routers se usa el servidor STUN público de Google (stun:stun.l.google.com:19302). Ese servidor ve la IP pública de cada teléfono. Es la única conexión externa. Los datos del informe viajan directo entre los dos teléfonos.</p></li>
+    <li><p>No hay servidor TURN (relevo). En algunas redes móviles, con NAT estricto o redes corporativas, la conexión puede fallar. Si pasa, anótalo en la guía.</p></li>
+    <li><p>Las llaves son de cada teléfono, no tienen respaldo: si borras los datos del navegador o pierdes el teléfono, la llave se pierde.</p></li>
+    <li><p>Leer un QR con la cámara depende del navegador (funciona donde existe BarcodeDetector, como Chrome en Android). Si no, copia y pega el código.</p></li>
+    <li><p>Verificado ✓ prueba que el informe no cambió y que lo firmó una llave de confianza. NO prueba que el contenido sea verdad ni tiene valor legal.</p></li>
+  </ul>
+</section>
+
+</main>
+<footer class="ft">Versión de prueba · datos de ejemplo · sin pagos reales · <a href="#limites">Límites</a></footer>
+<div id="toast" role="status"></div>
+<script src="qr.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
