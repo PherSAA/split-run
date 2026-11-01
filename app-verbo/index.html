@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phenom · El Verbo (versión de prueba)</title>
+<meta name="description" content="Phenom, versión de prueba: primero la palabra, luego el sello. Recibos, informes y certificados verificables. Datos de ejemplo, sin pagos reales.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="top"><span class="pill sm">Versión de prueba · datos de ejemplo</span><span class="lang" aria-label="Idioma: español">ES</span></div>
+<header class="hd">
+  <a href="#inicio" class="brand"><img src="icons/phenom-logo.svg" alt="" width="40" height="40"><span>PHENOM</span></a>
+  <button id="menuBtn" class="menu" aria-expanded="false" aria-controls="nav" aria-label="Menú"><span></span><span></span><span></span></button>
+</header>
+<nav id="nav" hidden aria-label="Secciones">
+  <a href="#inicio">Inicio</a><a href="#palabra">La Palabra</a><a href="#ofertas">Ofertas</a><a href="#plan">Qué falta</a><a href="#perfil">Perfil</a>
+  <p class="grp">Más</p>
+  <a href="#llave">La llave y Split Run</a><a href="#torniquete">Torniquete</a><a href="#pedir">Pedir información</a><button id="btnSalir" class="lnk" type="button">Salir</button>
+</nav>
+<main id="main">
+
+<section class="screen" data-screen="ingreso">
+  <p class="lbl">Bienvenido</p>
+  <h1>Entra para probar Phenom.</h1>
+  <p class="lead">Nada se envía a un servidor. Tu perfil se guarda solo en este teléfono.</p>
+  <button id="btnDemo" class="pill">Entrar en modo demo</button>
+  <div id="gsiSlot"></div>
+  <button id="btnGoogle" class="lnk" type="button" disabled><span id="btnGoogleTxt">Google · Client ID pendiente</span></button>
+  <p id="authNote" class="muted">Para activar Google, crea tu Client ID: <a href="GOOGLE-ID-PASOS.md">8 pasos →</a></p>
+</section>
+
+<section class="screen" data-screen="inicio" hidden>
+  <p class="lbl" id="hola">Hola</p>
+  <h1>Primero la palabra. Luego el sello.</h1>
+  <blockquote class="epi">«En el principio era el Verbo, y el Verbo era con Dios, y el Verbo era Dios.»<cite>Juan 1:1</cite></blockquote>
+  <p class="lead">En Phenom todo empieza como una frase: una venta, un informe, una garantía. Se sella, y lo dicho queda registrado: no se puede cambiar sin que se note.</p>
+  <a class="pill" href="#palabra">Sellar una frase</a>
+  <ul class="rows">
+    <li><p class="lbl">01</p><h2>Delis</h2><p>Recibos sellados para tu bodega.</p><a class="more" href="#ofertas">Leer más →</a></li>
+    <li><p class="lbl">02</p><h2>Construcción</h2><p>Informes y garantías de techo con huella.</p><a class="more" href="#obra">Leer más →</a></li>
+    <li><p class="lbl">03</p><h2>Qué falta</h2><p>Lo pendiente, dicho sin adornos.</p><a class="more" href="#plan">Leer más →</a></li>
+  </ul>
+</section>
+
+<section class="screen" data-screen="palabra" hidden>
+  <p class="lbl">Palabra → Sello → Verificación</p>
+  <h1>Escribe una frase. Séllala.</h1>
+  <div class="pipe" aria-hidden="true"><span id="p1">Palabra</span>→<span id="p2">Sello</span>→<span id="p3">Verificación</span></div>
+  <label class="lbl" for="frase">Tu frase</label>
+  <textarea id="frase" rows="3">Me comprometo a entregar el trabajo el viernes.</textarea>
+  <div class="sello" data-k="palabra"></div>
+</section>
+
+<section class="screen" data-screen="ofertas" hidden>
+  <p class="lbl">Ofertas · precios por definir</p>
+  <h1>Lo que se puede sellar hoy.</h1>
+  <ul class="rows">
+    <li><h2>Phenom Deli</h2><p>Caja de demo con recibos sellados.</p><a class="more" href="../phenom-v1.17.html#deli">Abrir Deli v1.17 →</a></li>
+    <li><h2>Informe de obra</h2><p>Trabajo del día, sellado.</p><a class="more" href="#obra">Leer más →</a></li>
+    <li><h2>Garantía de techo</h2><p>Certificado con fecha y huella.</p><a class="more" href="#garantia">Leer más →</a></li>
+    <li><h2>Arte con certificado</h2><p>La huella de tu archivo, calculada en tu teléfono.</p><a class="more" href="#arte">Leer más →</a></li>
+    <li><h2>Goteras</h2><p>Cotiza tu gotera con una foto.</p><a class="more" href="../sitio-prueba/">Leer más →</a></li>
+  </ul>
+</section>
+
+<section class="screen" data-screen="obra" hidden>
+  <p class="lbl">Informe de obra · datos de ejemplo</p>
+  <h1>El trabajo del día, sellado.</h1>
+  <p class="lead">Sin fotos en esta demo: solo el texto del informe.</p>
+  <div class="sello" data-k="obra"></div>
+</section>
+
+<section class="screen" data-screen="garantia" hidden>
+  <p class="lbl">Certificado de garantía · datos de ejemplo</p>
+  <h1>Garantía de techo con huella.</h1>
+  <p class="lead">Si alguien cambia la fecha o los años de garantía, el certificado deja de verificar.</p>
+  <div class="sello" data-k="garantia"></div>
+</section>
+
+<section class="screen" data-screen="arte" hidden>
+  <p class="lbl">Certificado de autenticidad · prueba</p>
+  <h1>La huella de tu obra.</h1>
+  <p class="lead">Elige una imagen. Su huella se calcula en este teléfono; el archivo nunca se sube.</p>
+  <label class="lbl" for="arteFile">Archivo</label><input id="arteFile" type="file" accept="image/*">
+  <label class="lbl" for="arteTit">Título</label><input id="arteTit" value="Obra de ejemplo">
+  <div class="sello" data-k="arte"></div>
+</section>
+
+<section class="screen" data-screen="llave" hidden>
+  <p class="lbl">Antes de los grandes cambios</p>
+  <h1>Divide, verifica, reenvía solo lo que falta.</h1>
+  <p class="lead">Split Run parte un mensaje en 4 piezas con su huella. Una raíz las une.</p>
+  <label class="lbl" for="srMsg">Mensaje de ejemplo</label>
+  <input id="srMsg" value="Pago de prueba: 3 cafés para la bodega">
+  <div class="acts"><button id="srSplit" class="pill">Dividir</button><button id="srDrop" class="lnk" disabled>Perder pieza</button><button id="srAlter" class="lnk" disabled>Alterar</button><button id="srResend" class="lnk" disabled>Reenviar</button><button id="srVerify" class="pill ghost" disabled>Verificar</button></div>
+  <dl id="srPieces" class="kv"></dl>
+  <p id="srSt" class="chip">Simulación</p>
+  <dl class="kv"><dt>Probado</dt><dd>Huellas SHA-256 y raíz en el navegador.</dd><dt>Hipótesis</dt><dd>La llave de 6 en hexágono y pagos guardar-y-reenviar sin internet.</dd></dl>
+  <ul class="rows"><li><h2>Versión completa</h2><p>Diagramas y enlaces a los originales.</p><a class="more" href="../app-prueba/#llave">Leer más →</a></li></ul>
+</section>
+
+<section class="screen" data-screen="torniquete" hidden>
+  <p class="lbl">Simulación · sin relación con la MTA</p>
+  <h1>Pases firmados, toques sellados.</h1>
+  <p class="lead">El torniquete verifica sin internet y anota cada toque en una cadena. No impide saltar el torniquete.</p>
+  <a class="pill" href="../torniquete-prueba/">Abrir la simulación</a>
+  <ul class="rows"><li><h2>Propuesta</h2><p>Borrador con fuentes oficiales.</p><a class="more" href="../torniquete-prueba/docs/PROPUESTA-MTA.md">Leer más →</a></li></ul>
+</section>
+
+<section class="screen" data-screen="plan" hidden>
+  <p class="lbl">Qué falta · dicho sin adornos</p>
+  <h1>Lo pendiente.</h1>
+  <dl id="falta" class="kv"></dl>
+  <p class="lbl">Ya hecho (en prueba)</p>
+  <dl id="hecho" class="kv"></dl>
+</section>
+
+<section class="screen" data-screen="perfil" hidden>
+  <p class="lbl" id="fuente">Perfil</p>
+  <h1>Tus datos, solo en este teléfono.</h1>
+  <form id="fPerfil">
+    <label>Nombre<input id="fName" autocomplete="name"></label>
+    <label>Correo<input id="fEmail" type="email" autocomplete="email"></label>
+    <label>Negocio<input id="fOrg" autocomplete="organization"></label>
+    <label>Tipo<select id="fTipo"><option value="bodega">Bodega / deli</option><option value="obra">Construcción</option><option value="arte">Arte</option><option value="otro">Otro</option></select></label>
+    <label>Barrio<input id="fBarrio" autocomplete="address-level2"></label>
+    <label>Teléfono<input id="fTel" type="tel" autocomplete="tel"></label>
+    <button class="pill">Guardar</button> <span id="perfilMsg" class="muted" role="status"></span>
+  </form>
+  <dl class="kv" id="gEstado"></dl>
+  <p class="muted">Google: pega el Client ID en config.js. <a href="GOOGLE-ID-PASOS.md">Cómo crearlo →</a></p>
+  <button id="btnBorrar" class="lnk">Borrar mis datos</button>
+</section>
+
+<section class="screen" data-screen="pedir" hidden>
+  <p class="lbl">Pedir información</p>
+  <h1>Cuéntanos qué necesitas.</h1>
+  <form id="fPedido">
+    <label>Tema<select id="pTema"><option>Cotiza tu gotera con una foto</option><option>Phenom Deli</option><option>Informes de obra</option><option>Garantía de techo</option><option>Arte con certificado</option></select></label>
+    <label>Nombre<input id="pName" autocomplete="name"></label>
+    <label>Negocio<input id="pOrg" autocomplete="organization"></label>
+    <label>Teléfono<input id="pTel" type="tel" autocomplete="tel"></label>
+    <label>Detalle<textarea id="pDet" rows="3"></textarea></label>
+    <button id="btnWs" class="pill" disabled>WhatsApp · número pendiente</button>
+  </form>
+</section>
+</main>
+<footer class="ft">Versión de prueba · datos de ejemplo · sin pagos reales · <a href="COMPARACION-VERBO.md">Por qué este diseño →</a></footer>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
