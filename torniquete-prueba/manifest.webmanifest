@@ -1,0 +1,12 @@
+{
+  "name": "Torniquete verificable · simulación de prueba",
+  "short_name": "Torniquete",
+  "lang": "es",
+  "start_url": "./#inicio",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "description": "Simulación de prueba: pases firmados y registro encadenado. Datos de ejemplo. Sin relación con la MTA.",
+  "icons": [{ "src": "icons/phenom-logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
