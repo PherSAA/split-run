@@ -5,10 +5,11 @@
 URL: https://phersaa.github.io/split-run/app-prueba/
 
 ## Qué es
-App web instalable (manifest + service worker, abre sin internet) con 4 pestañas:
+App web instalable (manifest + service worker, abre sin internet) con 5 pestañas:
 - **Inicio**: saludo, 4 tarjetas (Cotizar gotera, Caja Deli, Informe de obra verificado, Mis recibos), estado real (modo prueba, conexión, enlaces de la cadena de auditoría guardada) y lista "Qué sigue" que sale de `config.js`.
 - **Cotizar**: formularios Gotera / Piloto / Deli / Construcción rellenados con tu perfil. Solo abren WhatsApp con el mensaje escrito.
 - **El plan**: hecho, en prueba y lo que falta, más enlaces a ofertas y al laboratorio.
+- **La llave y Split Run**: las ideas originales (antes de los grandes cambios), con diagramas, una simulación de dividir/verificar/reenviar y qué es hipótesis y qué está probado.
 - **Perfil**: datos guardados solo en el teléfono (localStorage), con botón "Borrar mis datos".
 
 ## config.js
@@ -21,6 +22,8 @@ App web instalable (manifest + service worker, abre sin internet) con 4 pestaña
 | `STRIPE_TEST_BACKEND` | pendiente | URL del backend de Stripe **modo prueba** |
 
 ## Ingreso con Google: pasos exactos
+Versión corta para el teléfono: [GOOGLE-ID-PASOS.md](GOOGLE-ID-PASOS.md).
+
 1. Entra a https://console.cloud.google.com/ con tu cuenta (nunca compartas tu contraseña con nadie, ni con el bot).
 2. Crea o elige un proyecto.
 3. **APIs & Services → OAuth consent screen**: tipo *External*, nombre "Phenom (prueba)", tu correo de soporte; deja el modo *Testing* y agrega tu correo como usuario de prueba.

@@ -1,6 +1,7 @@
 // Configuración de la app de PRUEBA. Todo lo vacío = "pendiente". Nunca pongas aquí contraseñas ni claves secretas.
 window.PHENOM_APP_CONFIG = {
   // ID de cliente OAuth de Google (es público, termina en .apps.googleusercontent.com). Vacío = solo modo demo.
+  // Cómo crearlo en 8 pasos: ver GOOGLE-ID-PASOS.md (en esta misma carpeta). Pega SOLO el Client ID, nunca el secret.
   GOOGLE_CLIENT_ID: "",
   // Número de WhatsApp real con código de país, solo dígitos. Vacío = botones deshabilitados ("número pendiente").
   WHATSAPP: "",
