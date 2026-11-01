@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phenom · Caja (versión de prueba)</title>
+<meta name="description" content="Phenom, versión de prueba: caja con recibos firmados y un libro encadenado. Cobros simulados que no mueven dinero.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="top"><span class="pill sm">Versión de prueba · datos de ejemplo</span><span class="lang" aria-label="Idioma: español">ES</span></div>
+<header class="hd">
+  <a href="#caja" class="brand"><img src="icons/phenom-logo.svg" alt="" width="40" height="40"><span>PHENOM</span></a>
+  <button id="menuBtn" class="menu" aria-expanded="false" aria-controls="nav" aria-label="Menú"><span></span><span></span><span></span></button>
+</header>
+<nav id="nav" hidden aria-label="Secciones">
+  <a href="#caja">Caja</a><a href="#libro">Libro</a><a href="#plan">Plan</a><a href="#llave">Llave</a><a href="#falta">Qué falta</a>
+  <p class="grp">Más</p>
+  <a href="docs/CAJA.md">Cómo funciona (documento)</a><a href="../app-llave-real/">La llave real</a>
+</nav>
+<main id="main">
+
+<section class="screen" data-screen="caja">
+  <p class="lbl" id="planLbl">Plan Normal · cobro simulado</p>
+  <h1>Cobrar. Firmar. Listo.</h1>
+  <div class="planbar" role="group" aria-label="Plan"><button type="button" data-plan="normal" aria-pressed="true">Normal</button><button type="button" data-plan="pago" aria-pressed="false">Pago (demo)</button></div>
+  <p class="muted">El plan Pago es un interruptor de DEMO: no hay pago ni suscripción real. Precios por definir. La seguridad es la misma en los dos planes.</p>
+  <svg class="vault" viewBox="0 0 132 132" role="img" aria-label="Bóveda"><circle cx="66" cy="66" r="62" fill="#0a0a0a" stroke="#d4af37" stroke-width="3"/><circle cx="66" cy="66" r="50" fill="none" stroke="#d4af37" stroke-width="1" opacity=".5"/><path d="M50 60v-8a16 16 0 0 1 32 0v8" fill="none" stroke="#d4af37" stroke-width="6" stroke-linecap="round"/><rect x="42" y="60" width="48" height="36" rx="6" fill="#d4af37"/><circle cx="66" cy="76" r="5" fill="#0a0a0a"/><rect x="64" y="78" width="4" height="10" rx="2" fill="#0a0a0a"/></svg>
+  <form id="cForm" onsubmit="return false">
+    <label class="solo-normal">Monto (USD)<input id="cMonto" inputmode="decimal" value="6.50"></label>
+    <div class="solo-pago" id="lineas"><p class="lbl">Productos (2–5 líneas)</p></div>
+    <div class="solo-pago"><button class="lnk" id="lMas" type="button">+ Añadir línea</button><button class="lnk" id="lMenos" type="button">− Quitar línea</button></div>
+    <div class="solo-pago"><label class="sw"><input type="checkbox" id="pideHuella"> Pedir huella / Face ID antes de cobrar</label>
+    <button class="lnk" id="bPasskey" type="button">Registrar passkey en este dispositivo</button>
+    <p class="muted" id="waNota">Opcional. Probado solo en el emulador (autenticador virtual de Playwright), no en un iPhone real.</p></div>
+  </form>
+  <div class="big"><button class="pill cobrar" id="bCobrar" type="button">Cobrar (simulado)</button></div>
+  <p class="muted">La llave está detrás del botón: firma en este navegador y no se puede exportar. Emisor <span class="fp" id="cFp">…</span></p>
+  <div id="recibo" hidden class="imprimir">
+    <p class="lbl">Recibo</p>
+    <p class="monto" id="rMonto">—</p>
+    <span class="chip" id="rChip">—</span>
+    <div class="tabs" role="tablist"><button role="tab" data-t="s" aria-selected="true">Simple</button><button role="tab" data-t="d" aria-selected="false">Detallado</button><button role="tab" data-t="b" aria-selected="false">En bruto</button></div>
+    <div class="view" data-p="s"></div><div class="view" data-p="d" hidden></div><div class="view" data-p="b" hidden></div>
+    <div class="acts noprint"><button class="pill ghost" id="bVerRecibo" type="button">Verificar recibo</button><button class="lnk" id="bAltRecibo" type="button">Cambiar el monto (prueba)</button><button class="lnk solo-pago" id="bPrint" type="button">Ver para imprimir</button></div>
+  </div>
+</section>
+
+<section class="screen" data-screen="libro" hidden>
+  <p class="lbl">Libro de cobros · local</p>
+  <h1>Total: <span id="lTotal">$0.00</span></h1>
+  <p class="lead">Cada recibo lleva la huella del anterior. Si alguien cambia uno, el libro deja de verificar.</p>
+  <span class="chip" id="lChip">Sin verificar</span>
+  <div class="acts"><button class="pill" id="bVerLibro" type="button">Verificar libro</button><button class="pill ghost solo-pago" id="bExport" type="button">Exportar libro firmado</button></div>
+  <p class="muted" id="lInfo"></p>
+  <ul class="rows" id="lLista"></ul>
+  <div class="att"><p class="lbl">Pruebas</p><button class="lnk" id="bAltLibro" type="button">Alterar un recibo guardado</button><button class="lnk" id="bBorrar" type="button">Borrar libro de prueba</button></div>
+</section>
+
+<section class="screen" data-screen="plan" hidden>
+  <p class="lbl">Planes · demo</p>
+  <h1>Normal o Pago.</h1>
+  <dl class="kv"><dt>Normal</dt><dd>Caja, recibo firmado, libro encadenado y verificación.</dd><dt>Pago (demo)</dt><dd>Lo mismo, con vista dorada, cobros de 2–5 productos, exportar libro firmado, vista para imprimir y passkey opcional.</dd><dt>Seguridad</dt><dd>Igual en los dos planes.</dd><dt>Precio</dt><dd>Por definir. No hay pago ni suscripción real.</dd></dl>
+  <p class="lbl">Honestidad</p>
+  <ul class="rows"><li><p>Los recibos están firmados y sellados, no cifrados. localStorage e IndexedDB no están cifrados.</p></li><li><p>«SIMULADO — no mueve dinero»: ningún cobro es real.</p></li><li><p>La firma prueba que el recibo no cambió y qué llave lo firmó; no prueba que alguien pagó.</p></li></ul>
+</section>
+
+<section class="screen" data-screen="llave" hidden>
+  <p class="lbl">Llave</p>
+  <h1>Escondida detrás del botón.</h1>
+  <p class="lead">ECDSA P-256 creada en este navegador. La privada no se puede exportar. Solo se guarda junto al libro la llave pública.</p>
+  <dl class="kv"><dt>Huella</dt><dd class="fp" id="kFp">…</dd></dl>
+</section>
+
+<section class="screen" data-screen="falta" hidden>
+  <p class="lbl">Plan</p>
+  <h1>Qué falta.</h1>
+  <ul class="rows" id="faltaLista"></ul>
+</section>
+
+</main>
+<footer class="ft">Versión de prueba · datos de ejemplo · cobros simulados · <a href="docs/CAJA.md">Cómo funciona</a></footer>
+<div id="toast" role="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
