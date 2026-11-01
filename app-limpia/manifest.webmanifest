@@ -1,0 +1,15 @@
+{
+  "name": "Phenom · app limpia (prueba)",
+  "short_name": "Phenom",
+  "lang": "es",
+  "start_url": "./#inicio",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "description": "Versión de prueba de la app Phenom: cotizar goteras, caja Deli e informes de obra verificados. Sin pagos reales.",
+  "icons": [
+    { "src": "icons/phenom-logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/phenom-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
