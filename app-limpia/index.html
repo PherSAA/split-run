@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phenom · app limpia (versión de prueba)</title>
+<meta name="description" content="Phenom, versión de prueba con diseño limpio: cobra, sella y verifica recibos. Datos de ejemplo, sin pagos reales.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="top"><span class="pill sm">Versión de prueba</span><span class="lang" aria-label="Idioma: español">ES</span></div>
+<header class="hd">
+  <a href="#inicio" class="brand"><img src="icons/phenom-logo.svg" alt="" width="40" height="40"><span>PHENOM</span></a>
+  <button id="menuBtn" class="menu" aria-expanded="false" aria-controls="nav" aria-label="Menú"><span></span><span></span><span></span></button>
+</header>
+<nav id="nav" hidden aria-label="Secciones">
+  <a href="#inicio">Inicio</a><a href="#recibo">Recibo verificado</a><a href="#deli">Delis</a><a href="#obra">Construcción</a><a href="#llave">La llave y Split Run</a><a href="#plan">El plan</a><a href="#perfil">Perfil</a><a href="#pedir">Pedir información</a><button id="btnSalir" class="lnk" type="button">Salir</button>
+</nav>
+<main id="main">
+
+<section class="screen" data-screen="ingreso">
+  <p class="lbl">Bienvenido</p>
+  <h1>Entra para probar Phenom.</h1>
+  <p class="lead">Nada se envía a un servidor. Tu perfil se guarda solo en este teléfono.</p>
+  <button id="btnDemo" class="pill">Entrar en modo demo</button>
+  <div id="gsiSlot"></div>
+  <button id="btnGoogle" class="lnk" type="button" disabled><span id="btnGoogleTxt">Google · Client ID pendiente</span></button>
+  <p id="authNote" class="muted">Para activar Google, crea tu Client ID: <a href="GOOGLE-ID-PASOS.md">8 pasos →</a></p>
+</section>
+
+<section class="screen" data-screen="inicio" hidden>
+  <svg class="torus" viewBox="0 0 300 170" aria-hidden="true" focusable="false">
+    <defs>
+      <radialGradient id="tg" cx="50%" cy="50%" r="50%"><stop offset="55%" stop-color="#ff7a1a" stop-opacity="0"/><stop offset="72%" stop-color="#ff9a4a" stop-opacity=".55"/><stop offset="82%" stop-color="#ffd2a8" stop-opacity=".35"/><stop offset="100%" stop-color="#ff7a1a" stop-opacity="0"/></radialGradient>
+      <radialGradient id="tc" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff7a1a" stop-opacity=".18"/><stop offset="100%" stop-color="#ff7a1a" stop-opacity="0"/></radialGradient>
+    </defs>
+    <ellipse cx="150" cy="85" rx="140" ry="78" fill="url(#tc)"/>
+    <ellipse cx="150" cy="85" rx="118" ry="56" fill="url(#tg)"/>
+  </svg>
+  <p class="lbl" id="hola">Hola</p>
+  <h1>Cobra, sella y verifica. Aunque se caiga el internet.</h1>
+  <a class="pill" href="#recibo">Ver un recibo verificado</a>
+  <ul class="rows">
+    <li><p class="lbl">01</p><h2>Delis</h2><p>Caja con recibos sellados para tu bodega.</p><a class="more" href="#deli">Leer más →</a></li>
+    <li><p class="lbl">02</p><h2>Construcción</h2><p>Informes de obra que nadie cambia sin que se note.</p><a class="more" href="#obra">Leer más →</a></li>
+    <li><p class="lbl">03</p><h2>La llave y Split Run</h2><p>La idea original: dividir, verificar y reenviar solo lo que falta.</p><a class="more" href="#llave">Leer más →</a></li>
+  </ul>
+  <dl class="kv" id="estado"></dl>
+</section>
+
+<section class="screen" data-screen="recibo" hidden>
+  <p class="lbl">Recibo · datos de ejemplo</p>
+  <h1 id="rTitle">Venta Deli</h1>
+  <p id="rChip" class="chip">Sin sellar</p>
+  <div class="tabs" role="tablist" aria-label="Formato del recibo">
+    <button role="tab" aria-selected="true" data-v="simple" id="tSimple">Simple</button><button role="tab" aria-selected="false" data-v="detallado" id="tDet">Detallado</button><button role="tab" aria-selected="false" data-v="bruto" id="tBruto">En bruto</button>
+  </div>
+  <div id="vSimple" class="view" role="tabpanel" aria-labelledby="tSimple"></div>
+  <dl id="vDet" class="view kv" role="tabpanel" aria-labelledby="tDet" hidden></dl>
+  <div id="vBruto" class="view" role="tabpanel" aria-labelledby="tBruto" hidden><pre id="rJson"></pre><p class="lbl">SHA-256</p><pre id="rHash">—</pre></div>
+  <div class="acts">
+    <button id="rSeal" class="pill">Sellar recibo</button>
+    <button id="rVerify" class="pill ghost" disabled>Verificar</button>
+    <button id="rTamper" class="lnk" disabled>Cambiar un dato (prueba)</button>
+    <button id="rTipo" class="lnk">Usar informe de obra</button>
+  </div>
+  <p class="muted">El sello es una huella SHA-256 calculada en tu navegador con WebCrypto. Si cambia una sola letra, la huella no coincide. Es una demo: no hay firma de servidor ni pagos reales.</p>
+</section>
+
+<section class="screen" data-screen="deli" hidden>
+  <p class="lbl">Oferta · precio por definir</p>
+  <h1>Una caja simple para tu deli.</h1>
+  <p class="lead">Cada venta queda en un recibo sellado. Si alguien lo cambia después, se nota.</p>
+  <a class="pill" href="../phenom-v1.17.html#deli">Abrir Deli v1.17</a>
+  <ul class="rows">
+    <li><h2>Recibo verificado</h2><p>Simple, detallado o en bruto.</p><a class="more" href="#recibo">Leer más →</a></li>
+    <li><h2>Página de la oferta</h2><p>Borrador en el sitio de prueba.</p><a class="more" href="../sitio-prueba/deli.html">Leer más →</a></li>
+  </ul>
+</section>
+
+<section class="screen" data-screen="obra" hidden>
+  <p class="lbl">Oferta · precio por definir</p>
+  <h1>Informes de obra con huella.</h1>
+  <p class="lead">Fotos y archivos con su huella. El cliente comprueba que nada cambió.</p>
+  <a class="pill" href="../phenom-v1.16.html#envio">Probar envío verificado</a>
+  <ul class="rows">
+    <li><h2>Informe de ejemplo</h2><p>Séllalo y verifícalo aquí mismo.</p><a class="more" href="#recibo" id="aObra">Leer más →</a></li>
+    <li><h2>Página de la oferta</h2><p>Borrador en el sitio de prueba.</p><a class="more" href="../sitio-prueba/construccion.html">Leer más →</a></li>
+    <li><h2>Goteras</h2><p>Cotiza tu gotera con una foto.</p><a class="more" href="../sitio-prueba/">Leer más →</a></li>
+  </ul>
+</section>
+
+<section class="screen" data-screen="llave" hidden>
+  <p class="lbl">Antes de los grandes cambios</p>
+  <h1>Divide, verifica, reenvía solo lo que falta.</h1>
+  <p class="lead">Split Run parte un mensaje en 4 piezas, cada una con su huella. Una raíz las une.</p>
+  <label class="lbl" for="srMsg">Mensaje de ejemplo</label>
+  <input id="srMsg" value="Pago de prueba: 3 cafés para la bodega">
+  <div class="acts"><button id="srSplit" class="pill">Dividir</button><button id="srDrop" class="lnk" disabled>Perder pieza</button><button id="srAlter" class="lnk" disabled>Alterar</button><button id="srResend" class="lnk" disabled>Reenviar</button><button id="srVerify" class="pill ghost" disabled>Verificar</button></div>
+  <dl id="srPieces" class="kv"></dl>
+  <p id="srSt" class="chip">Simulación</p>
+  <dl class="kv">
+    <dt>Probado</dt><dd>Huellas SHA-256 y raíz en el navegador (esta simulación).</dd>
+    <dt>Hipótesis</dt><dd>La llave de 6 en hexágono y pagos guardar-y-reenviar sin internet.</dd>
+  </dl>
+  <ul class="rows">
+    <li><h2>Página original</h2><p>Phenom v1.5, Split Run.</p><a class="more" href="../phenom-v1.5.html">Leer más →</a></li>
+    <li><h2>Versión completa</h2><p>Diagramas y enlaces a los originales.</p><a class="more" href="../app-prueba/#llave">Leer más →</a></li>
+  </ul>
+</section>
+
+<section class="screen" data-screen="plan" hidden>
+  <p class="lbl">El plan</p>
+  <h1>Qué está hecho y qué falta.</h1>
+  <p class="lbl">Hecho</p><dl id="hecho" class="kv"></dl>
+  <p class="lbl">En prueba</p><dl id="prueba" class="kv"></dl>
+  <p class="lbl">Falta</p><dl id="falta" class="kv"></dl>
+</section>
+
+<section class="screen" data-screen="perfil" hidden>
+  <p class="lbl" id="fuente">Perfil</p>
+  <h1>Tus datos, solo en este teléfono.</h1>
+  <form id="fPerfil">
+    <label>Nombre<input id="fName" autocomplete="name"></label>
+    <label>Correo<input id="fEmail" type="email" autocomplete="email"></label>
+    <label>Negocio<input id="fOrg" autocomplete="organization"></label>
+    <label>Tipo<select id="fTipo"><option value="bodega">Bodega / deli</option><option value="obra">Construcción</option><option value="casa">Casa</option><option value="otro">Otro</option></select></label>
+    <label>Barrio<input id="fBarrio" autocomplete="address-level2"></label>
+    <label>Teléfono<input id="fTel" type="tel" autocomplete="tel"></label>
+    <button class="pill">Guardar</button> <span id="perfilMsg" class="muted" role="status"></span>
+  </form>
+  <button id="btnBorrar" class="lnk">Borrar mis datos</button>
+</section>
+
+<section class="screen" data-screen="pedir" hidden>
+  <p class="lbl">Pedir información</p>
+  <h1>Cuéntanos qué necesitas.</h1>
+  <form id="fPedido">
+    <label>Tema<select id="pTema"><option>Cotiza tu gotera con una foto</option><option>Phenom Deli</option><option>Informes de obra</option><option>Piloto Phenom</option></select></label>
+    <label>Nombre<input id="pName" autocomplete="name"></label>
+    <label>Negocio<input id="pOrg" autocomplete="organization"></label>
+    <label>Barrio<input id="pBarrio"></label>
+    <label>Teléfono<input id="pTel" type="tel" autocomplete="tel"></label>
+    <label>Detalle<textarea id="pDet" rows="3"></textarea></label>
+    <button id="btnWs" class="pill" disabled>WhatsApp · número pendiente</button>
+  </form>
+</section>
+</main>
+<footer class="ft">Versión de prueba · datos de ejemplo · sin pagos reales · <a href="COMPARACION.md">Por qué este diseño →</a></footer>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
