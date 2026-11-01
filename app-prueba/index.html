@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#07070a">
+<meta name="description" content="Phenom · app de prueba: cotizar goteras, caja Deli e informes de obra verificados. Sin pagos reales, datos de ejemplo.">
+<title>Phenom · app de prueba</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+<script src="config.js"></script>
+</head>
+<body>
+<div class="bg" aria-hidden="true">
+  <div class="glow g1"></div><div class="glow g2"></div>
+  <svg class="mk" viewBox="-100 -100 200 200">
+    <circle class="ring r1" r="92"/><circle class="ring r2" r="74"/><circle class="ring r3" r="56"/>
+    <g class="tri t1"><polygon points="0,-62 53.7,31 -53.7,31"/></g>
+    <g class="tri t2"><polygon points="0,62 53.7,-31 -53.7,-31"/></g>
+  </svg>
+</div>
+
+<div class="banner" role="note">VERSIÓN DE PRUEBA · sin pagos reales · datos de ejemplo</div>
+
+<main id="app">
+<!-- INGRESO -->
+<section class="screen" id="s-ingreso" data-screen="ingreso" hidden>
+  <div class="hero">
+    <img class="logo pulse" src="icons/phenom-logo.svg" alt="Phenom" width="112" height="112">
+    <h1>Phenom</h1>
+    <p class="sub">Cotiza goteras, cobra en tu deli y entrega informes de obra que nadie puede cambiar sin que se note.</p>
+  </div>
+  <div class="glass stack">
+    <div id="gsiSlot"></div>
+    <button class="btn google" id="btnGoogle" type="button" disabled><span class="gmark" aria-hidden="true">G</span><span id="btnGoogleTxt">Ingreso con Google · pendiente de configurar</span></button>
+    <button class="btn primary" id="btnDemo" type="button">Entrar en modo demo (sin cuenta)</button>
+    <p class="fine" id="authNote">El ingreso con Google todavía no está activado. El modo demo usa un perfil de ejemplo guardado solo en este teléfono.</p>
+  </div>
+  <p class="fine center">Esto es una prueba: no hay cuenta real ni servidor. Para un ingreso real, un servidor debe verificar el token de Google.</p>
+</section>
+
+<!-- INICIO -->
+<section class="screen" id="s-inicio" data-screen="inicio" hidden>
+  <header class="top">
+    <div class="avatar" id="avatar" aria-hidden="true"></div>
+    <div><p class="k">Panel principal</p><h1 id="hola">Hola</h1></div>
+  </header>
+  <div class="strip" id="strip" aria-label="Estado"></div>
+  <div class="grid">
+    <a class="card tilt" href="#cotizar" id="cGotera"><span class="ic">💧</span><b>Cotizar gotera</b><small>Fotos + barrio → mensaje listo por WhatsApp</small></a>
+    <a class="card tilt" href="../phenom-v1.16.html#deli" id="cDeli"><span class="ic">🧾</span><b>Caja Deli</b><small>Demo de caja con recibos sellados</small></a>
+    <a class="card tilt" href="../phenom-v1.16.html#envio" id="cObra"><span class="ic">🏗️</span><b>Informe de obra verificado</b><small>Envía fotos y archivos con huella</small></a>
+    <div class="card tilt" id="cRecibos" tabindex="0"><span class="ic">📊</span><b>Mis recibos</b><small id="recibos">sin datos todavía</small></div>
+  </div>
+  <div class="glass">
+    <h2>Qué sigue</h2>
+    <ul class="check" id="sigue"></ul>
+  </div>
+</section>
+
+<!-- COTIZAR / INSCRIPCIONES -->
+<section class="screen" id="s-cotizar" data-screen="cotizar" hidden>
+  <header class="top"><div><p class="k">Pedir por WhatsApp</p><h1>Cotizar e inscribirse</h1></div></header>
+  <div class="seg" role="tablist" aria-label="Tipo de solicitud">
+    <button type="button" role="tab" data-f="gotera" aria-selected="true">Gotera</button>
+    <button type="button" role="tab" data-f="piloto" aria-selected="false">Piloto</button>
+    <button type="button" role="tab" data-f="deli" aria-selected="false">Deli</button>
+    <button type="button" role="tab" data-f="obra" aria-selected="false">Construcción</button>
+  </div>
+  <form class="glass stack" id="fPedido" autocomplete="on">
+    <p class="fine" id="fDesc"></p>
+    <label>Nombre<input name="name" id="pName" autocomplete="name" required></label>
+    <label>Negocio<input name="organization" id="pOrg" autocomplete="organization"></label>
+    <label>Teléfono / WhatsApp<input name="tel" id="pTel" type="tel" autocomplete="tel" inputmode="tel"></label>
+    <label>Barrio<input name="barrio" id="pBarrio" autocomplete="address-level2"></label>
+    <label>Detalle<textarea id="pDet" rows="3" placeholder="Ej.: gotera en el techo de la cocina desde ayer"></textarea></label>
+    <button class="btn primary" id="btnWs" type="submit">Enviar por WhatsApp</button>
+    <p class="fine">Solo abre WhatsApp con el mensaje escrito; no se envía nada desde aquí. Precios: por definir.</p>
+  </form>
+</section>
+
+<!-- PLAN -->
+<section class="screen" id="s-plan" data-screen="plan" hidden>
+  <header class="top"><div><p class="k">Cómo va la web</p><h1>El plan</h1></div></header>
+  <div class="road">
+    <div class="glass"><h2><span class="dot ok"></span>Hecho</h2><ol id="hecho" class="tl"></ol></div>
+    <div class="glass"><h2><span class="dot try"></span>En prueba</h2><ul id="prueba" class="tl"></ul></div>
+    <div class="glass"><h2><span class="dot todo"></span>Falta</h2><ul id="falta" class="tl"></ul></div>
+  </div>
+  <div class="glass"><h2>Ofertas</h2>
+    <div class="links">
+      <a class="pill" href="../sitio-prueba/deli.html">Phenom Deli →</a>
+      <a class="pill" href="../sitio-prueba/construccion.html">Informes de obra →</a>
+      <a class="pill" href="../sitio-prueba/">Sitio de prueba →</a>
+    </div>
+  </div>
+  <div class="glass"><h2>Laboratorio (demos)</h2>
+    <div class="links">
+      <a class="pill" href="../phenom-v1.16.html">Demo completa v1.16 →</a>
+      <a class="pill" href="../phenom-v1.16.html#deli">Caja Deli →</a>
+      <a class="pill" href="../phenom-v1.16.html#envio">Envío verificado →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PERFIL -->
+<section class="screen" id="s-perfil" data-screen="perfil" hidden>
+  <header class="top"><div><p class="k">Autorrelleno</p><h1>Mi perfil</h1></div></header>
+  <form class="glass stack" id="fPerfil" autocomplete="on">
+    <label>Nombre<input id="fName" name="name" autocomplete="name"></label>
+    <label>Correo<input id="fEmail" name="email" type="email" autocomplete="email"></label>
+    <label>Negocio<input id="fOrg" name="organization" autocomplete="organization"></label>
+    <label>Tipo
+      <select id="fTipo" name="tipo"><option value="">Elegir…</option><option value="bodega">Bodega</option><option value="construccion">Construcción</option><option value="techos">Techos</option></select></label>
+    <label>Barrio<input id="fBarrio" name="barrio" autocomplete="address-level2"></label>
+    <label>WhatsApp<input id="fTel" name="tel" type="tel" autocomplete="tel" inputmode="tel"></label>
+    <label>Idioma<select id="fIdioma" name="idioma"><option value="es">Español</option><option value="en">English</option></select></label>
+    <button class="btn primary" type="submit">Guardar</button>
+    <p class="fine" id="perfilMsg" role="status"></p>
+  </form>
+  <div class="glass stack">
+    <p class="fine">Privacidad: tus datos se guardan solo en este teléfono (localStorage). No se envían a ningún servidor.</p>
+    <p class="fine" id="fuente"></p>
+    <button class="btn ghost" id="btnBorrar" type="button">Borrar mis datos</button>
+    <button class="btn ghost" id="btnSalir" type="button">Salir</button>
+  </div>
+</section>
+</main>
+
+<nav class="tabs" id="tabs" aria-label="Secciones" hidden>
+  <a href="#inicio" data-t="inicio"><span aria-hidden="true">⌂</span>Inicio</a>
+  <a href="#cotizar" data-t="cotizar"><span aria-hidden="true">✚</span>Cotizar</a>
+  <a href="#plan" data-t="plan"><span aria-hidden="true">◈</span>El plan</a>
+  <a href="#perfil" data-t="perfil"><span aria-hidden="true">◉</span>Perfil</a>
+</nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
