@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phenom · La llave real (versión de prueba)</title>
+<meta name="description" content="Phenom, versión de prueba: sellar, enviar por piezas y verificar un informe de obra o una garantía de techo. Datos de ejemplo, sin pagos reales.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="top"><span class="pill sm">Versión de prueba · datos de ejemplo</span><span class="lang" aria-label="Idioma: español">ES</span></div>
+<header class="hd">
+  <a href="#inicio" class="brand"><img src="icons/phenom-logo.svg" alt="" width="40" height="40"><span>PHENOM</span></a>
+  <button id="menuBtn" class="menu" aria-expanded="false" aria-controls="nav" aria-label="Menú"><span></span><span></span><span></span></button>
+</header>
+<nav id="nav" hidden aria-label="Secciones">
+  <a href="#inicio">Inicio</a><a href="#flujo">Sellar y enviar</a><a href="#receptor">Receptor</a><a href="#llaves">Llaves</a><a href="#falta">Qué falta</a>
+  <p class="grp">Más</p>
+  <a href="#prueba">Qué prueba y qué NO prueba</a><a href="docs/LLAVE-REAL.md">Cómo funciona (documento)</a><a href="../app-verbo/">App Verbo</a>
+</nav>
+<main id="main">
+
+<section class="screen" data-screen="inicio">
+  <p class="lbl">La llave real · prueba</p>
+  <h1>Sellar. Enviar. Verificar.</h1>
+  <p class="lead">Un informe de obra o una garantía de techo, sellado con la llave del emisor, enviado por piezas y verificado por quien lo recibe.</p>
+  <p class="lbl">Elige qué enviar</p>
+  <div class="choose"><button type="button" data-tipo="obra">Informe de obra</button><button type="button" data-tipo="techo">Garantía de techo</button></div>
+  <ul class="rows">
+    <li><p class="lbl">01 · Sellar</p><p>La llave del emisor firma el documento. La llave privada nunca se muestra.</p></li>
+    <li><p class="lbl">02 · Enviar</p><p>Se divide en piezas. Si se pierden piezas, solo esas se reenvían.</p></li>
+    <li><p class="lbl">03 · Verificar</p><p>El receptor comprueba firma, llave conocida, llave no revocada y que no sea una repetición.</p></li>
+  </ul>
+</section>
+
+<section class="screen" data-screen="flujo" hidden>
+  <p class="lbl" id="fTipoLbl">Informe de obra · datos de ejemplo</p>
+  <h1 id="fTitulo">Informe de obra.</h1>
+  <div class="choose"><button type="button" data-tipo="obra">Obra</button><button type="button" data-tipo="techo">Techo</button></div>
+  <form id="fForm" onsubmit="return false">
+    <div data-solo="obra"><label>Obra<input id="oObra" value="Remodelación cocina · ejemplo"></label>
+    <label>Inspector / subcontratista<input id="oInsp" value="Inspector de ejemplo"></label>
+    <label>Avance (%)<input id="oAvance" type="number" value="60"></label>
+    <label>Nota<input id="oNota" value="Instalación eléctrica revisada."></label></div>
+    <div data-solo="techo" hidden><label>Cliente<input id="tCli" value="Cliente de ejemplo"></label>
+    <label>Trabajo<input id="tTrab" value="Reparación de goteras en área de 20 m²"></label>
+    <label>Años de garantía<input id="tAnos" type="number" value="5"></label>
+    <label>Fecha<input id="tFecha" type="date" value="2026-11-01"></label></div>
+    <label>Fotos (opcional · se calcula su huella aquí, no se suben)<input id="fFotos" type="file" accept="image/*" multiple></label>
+  </form>
+  <p class="muted">Emisor: <span class="fp" id="fFp">…</span></p>
+  <div class="big">
+    <button class="pill" id="bSellar" type="button">Sellar</button>
+    <button class="pill" id="bEnviar" type="button" disabled>Enviar</button>
+    <button class="pill" id="bVerificar" type="button" disabled>Verificar</button>
+  </div>
+  <p id="fEstado" class="muted" aria-live="polite">Llena el formulario y pulsa Sellar.</p>
+  <div id="envio" hidden>
+    <p class="lbl">Envío por piezas (enlace simulado)</p>
+    <label class="sw"><input type="checkbox" id="cortar"> Cortar conexión (se pierden piezas)</label>
+    <div class="pieces" id="piezas" aria-label="Piezas"></div>
+    <p class="muted" id="envInfo"></p>
+    <button class="pill ghost" id="bReenviar" type="button" hidden>Reenviar solo las que faltan</button>
+  </div>
+  <div id="res" hidden>
+    <span class="chip" id="resChip">—</span>
+    <div class="tabs" role="tablist"><button role="tab" data-t="s" aria-selected="true">Simple</button><button role="tab" data-t="d" aria-selected="false">Detallado</button><button role="tab" data-t="b" aria-selected="false">En bruto</button></div>
+    <div class="view" data-p="s"></div><div class="view" data-p="d" hidden></div><div class="view" data-p="b" hidden></div>
+  </div>
+  <div class="att">
+    <p class="lbl">Pruebas de ataque (como receptor)</p>
+    <button class="lnk" id="aCambiar" type="button" disabled>Cambiar un dato</button>
+    <button class="lnk" id="aRepetir" type="button" disabled>Repetir el mismo paquete</button>
+    <button class="lnk" id="aDesconocida" type="button">Firmar con llave desconocida</button>
+    <button class="lnk" id="aRevocada" type="button" disabled>Revocar la llave y verificar</button>
+  </div>
+</section>
+
+<section class="screen" data-screen="receptor" hidden>
+  <p class="lbl">Receptor · mismo dispositivo</p>
+  <h1>Recibir en otra pestaña.</h1>
+  <p class="lead">Abre esta pantalla en una segunda pestaña. Cuando la primera pulse Enviar, las piezas llegan aquí por BroadcastChannel.</p>
+  <p class="muted">Funciona solo entre pestañas del mismo navegador y dispositivo. El envío entre teléfonos (WebRTC) no está probado.</p>
+  <div class="pieces" id="rPiezas"></div>
+  <p class="muted" id="rInfo" aria-live="polite">Esperando piezas…</p>
+  <span class="chip" id="rChip">Sin paquete</span>
+  <pre id="rBruto"></pre>
+</section>
+
+<section class="screen" data-screen="llaves" hidden>
+  <p class="lbl">Llavero</p>
+  <h1>Tu llave, escondida.</h1>
+  <p class="lead">Se creó en este navegador. Solo se muestra su huella pública. La llave privada no se puede exportar.</p>
+  <dl class="kv"><dt>Emisor</dt><dd><span class="fp" id="kFp">…</span></dd><dt>Estado</dt><dd id="kEstado">…</dd></dl>
+  <div class="acts">
+    <button class="pill ghost" id="kExport" type="button">Exportar llave pública</button>
+    <button class="lnk" id="kRevocar" type="button">Revocar</button>
+    <button class="lnk" id="kNueva" type="button">Crear llave nueva</button>
+  </div>
+  <pre id="kPub" hidden></pre>
+  <p class="lbl">Llaves de confianza en este dispositivo</p>
+  <ul class="rows" id="kLista"></ul>
+</section>
+
+<section class="screen" data-screen="prueba" hidden>
+  <p class="lbl">Honestidad</p>
+  <h1>Qué prueba y qué NO prueba.</h1>
+  <p class="lbl">Prueba</p>
+  <ul class="rows" id="siPrueba">
+    <li><p>Que el documento no cambió desde que se selló.</p></li>
+    <li><p>Que lo firmó una llave conocida y no revocada.</p></li>
+    <li><p>Que no es una repetición de un paquete ya recibido.</p></li>
+    <li><p>Que todas las piezas llegaron completas (huella raíz).</p></li>
+  </ul>
+  <p class="lbl">NO prueba</p>
+  <ul class="rows" id="noPrueba">
+    <li><p>Que el contenido sea verdad: alguien puede sellar algo falso.</p></li>
+    <li><p>Valor como evidencia legal.</p></li>
+    <li><p>La identidad de la persona más allá de la llave.</p></li>
+    <li><p>Nada sobre clientes reales: las llaves y los datos son de ejemplo, sin pagos reales.</p></li>
+  </ul>
+</section>
+
+<section class="screen" data-screen="falta" hidden>
+  <p class="lbl">Plan</p>
+  <h1>Qué falta.</h1>
+  <ul class="rows" id="faltaLista"></ul>
+  <p class="lbl">Hecho en esta prueba</p>
+  <ul class="rows" id="hechoLista"></ul>
+</section>
+
+</main>
+<footer class="ft">Versión de prueba · datos de ejemplo · sin pagos reales · <a href="docs/LLAVE-REAL.md">Cómo funciona</a></footer>
+<div id="toast" role="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
