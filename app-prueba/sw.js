@@ -1,6 +1,6 @@
 // Service worker de la app de PRUEBA: guarda los archivos de la app para que abra sin internet.
-const CACHE = 'phenom-app-prueba-v1';
-const FILES = ['./', './index.html', './app.css', './app.js', './config.js', './manifest.webmanifest', './icons/phenom-logo.svg', './icons/phenom-maskable.svg'];
+const CACHE = 'phenom-app-prueba-v2';
+const FILES = ['./', './index.html', './app.css', './app.js', './config.js', './manifest.webmanifest', './icons/phenom-logo.svg', './icons/phenom-maskable.svg', './GOOGLE-ID-PASOS.md'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {

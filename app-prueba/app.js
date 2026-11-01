@@ -55,7 +55,7 @@ function recibos() {
 function enlacesCadena(L) { if (!L || !L.length) return null; let prev = '0'.repeat(64); for (const r of L) { if (!r || r.prev !== prev || typeof r.hash !== 'string') return false; prev = r.hash; } return true; }
 
 /* ---------- pantallas ---------- */
-const SCREENS = ['ingreso', 'inicio', 'cotizar', 'plan', 'perfil'];
+const SCREENS = ['ingreso', 'inicio', 'cotizar', 'llave', 'plan', 'perfil'];
 function render() {
   const ses = get(KS); let h = (location.hash || '').slice(1);
   if (!ses) h = 'ingreso'; else if (!SCREENS.includes(h) || h === 'ingreso') h = 'inicio';
@@ -88,7 +88,7 @@ function renderInicio() {
     [!!String(C.DOMINIO || '').trim(), 'Dominio propio', 'Hoy vive en phersaa.github.io'],
     [C.REVISION_LEGAL === true, 'Revisión legal', 'Un abogado revisa términos, privacidad y reembolsos'],
     [!!String(C.STRIPE_TEST_BACKEND || '').trim() || r.stripe, 'Stripe en modo prueba', 'Desplegar el backend de prueba (sin cobros reales)'],
-    [!!String(C.GOOGLE_CLIENT_ID || '').trim(), 'Google Client ID', 'Crear el ID en Google Cloud (ver README)']
+    [!!String(C.GOOGLE_CLIENT_ID || '').trim(), 'Google Client ID', 'Lo creas tú en Google Cloud: 8 pasos en GOOGLE-ID-PASOS.md']
   ];
   const ul = $('sigue'); ul.textContent = '';
   items.forEach(([d, t, s]) => { const li = document.createElement('li'); li.className = d ? 'done' : ''; const i = document.createElement('i'); i.textContent = d ? '✓' : ''; const sp = document.createElement('span'); sp.textContent = t; const sm = document.createElement('small'); sm.textContent = d ? 'Listo' : s; sp.append(sm); li.append(i, sp); ul.append(li); });
@@ -99,12 +99,14 @@ function renderPerfil() {
   $('fuente').textContent = 'Origen del perfil: ' + (p.fuente === 'demo' ? 'perfil demo de ejemplo' : p.fuente === 'google-sin-verificar' ? 'Google (nombre/correo/foto, sin verificar en servidor)' : 'escrito por ti');
 }
 const PLAN = {
-  hecho: [['v1.1–v1.3', 'Primeras demos y Envío verificado: cada archivo lleva una huella; si alguien lo cambia, se nota.'],
+  hecho: [['Antes de v1', 'Las ideas originales: la llave (permisos firmados, hexágono de 6) y Split Run (dividir, verificar, reenviar). Ver pestaña Llave.'],
+    ['v1.1–v1.3', 'Primeras demos y Envío verificado: cada archivo lleva una huella; si alguien lo cambia, se nota.'],
     ['v1.4–v1.6', 'Verificadores 2 de 3 y Split Run: el trabajo se reparte en piezas y cada una se comprueba.'],
     ['v1.7–v1.9', 'Teleport P2P de teléfono a teléfono e invitaciones firmadas por el administrador.'],
     ['v1.10–v1.13', 'Phenom Deli: caja de demo, inventario, auditoría encadenada y tickets.'],
     ['v1.14–v1.15', 'Vistas más claras y botón de pago Stripe en modo prueba.'],
-    ['v1.16', 'Se quitó el Diario y se agregaron las ofertas Deli y Construcción.']],
+    ['v1.16', 'Se quitó el Diario y se agregaron las ofertas Deli y Construcción.'],
+    ['v1.17', 'Deli más ordenado: una sola vista principal y "Más herramientas" para lo demás.']],
   prueba: ['Stripe en modo prueba (sin cobros reales)', 'Sitio de prueba con términos, privacidad y reembolsos (borradores)', 'Ofertas: Phenom Deli e informes de obra', 'Esta app de prueba'],
   falta: ['LLC y EIN', 'Dominio propio', 'Revisión legal', 'Pagos reales', 'Pruebas en teléfonos reales con clientes']
 };
@@ -115,7 +117,7 @@ function renderPlan() {
   PLAN.falta.forEach(t => { const li = document.createElement('li'); li.textContent = t; $('falta').append(li); });
 }
 const FORMS = {
-  gotera: ['Cotizar gotera', 'Describe la gotera y tu barrio. Te respondemos por WhatsApp con una cotización (precio por definir).'],
+  gotera: ['Cotiza tu gotera con una foto', 'Cuéntanos qué pasa y envía una foto por WhatsApp; te orientamos sobre los siguientes pasos.'],
   piloto: ['Piloto Phenom', 'Inscríbete al piloto de prueba. Sin costo durante la prueba; condiciones por definir.'],
   deli: ['Phenom Deli', 'Caja con recibos sellados para tu bodega. Precio por definir.'],
   obra: ['Informes de obra', 'Informes verificados para subcontratistas de construcción. Precio por definir.']
@@ -141,6 +143,43 @@ $('fPedido').addEventListener('submit', e => {
   const w = window.open('https://wa.me/' + num + '?text=' + encodeURIComponent(t), '_blank'); if (w) w.opener = null;
 });
 $('cRecibos').addEventListener('click', () => toast($('recibos').textContent));
+
+/* ---------- Split Run: simulación (misma raíz que v1.5: sha(huellas unidas)) ---------- */
+const te = new TextEncoder();
+const sha = async s => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', te.encode(s))), b => b.toString(16).padStart(2, '0')).join('');
+const SR = { parts: [], hs: [], root: '', got: [] };
+function srDraw(marks) {
+  const box = $('srPieces'); box.textContent = '';
+  SR.parts.forEach((p, i) => {
+    const d = document.createElement('div'), g = SR.got[i];
+    d.className = 'pc' + (g === null ? ' lost' : '') + (marks && marks[i] ? ' ' + marks[i] : '');
+    const b = document.createElement('b'); b.textContent = 'Pieza ' + (i + 1) + (g === null ? ' · perdida' : '');
+    const t = document.createElement('div'); t.textContent = g === null ? '—' : g;
+    const c = document.createElement('code'); c.textContent = '#' + SR.hs[i].slice(0, 8);
+    d.append(b, t, c); box.append(d);
+  });
+}
+const srSt = (t, cls) => { const e = $('srSt'); e.textContent = t; e.className = 'st ' + (cls || ''); };
+const srBtns = on => ['srDrop', 'srAlter', 'srResend', 'srVerify'].forEach(id => $(id).disabled = !on);
+$('srSplit').addEventListener('click', async () => {
+  const m = $('srMsg').value || ' ', n = 4, L = Math.ceil(m.length / n);
+  SR.parts = Array.from({ length: n }, (_, i) => m.slice(i * L, (i + 1) * L));
+  SR.hs = await Promise.all(SR.parts.map(sha)); SR.root = await sha(SR.hs.join('')); SR.got = SR.parts.slice();
+  srDraw(); srBtns(true); srSt('Dividido en 4 piezas · raíz ' + SR.root.slice(0, 16) + '…');
+});
+$('srDrop').addEventListener('click', () => { const live = SR.got.map((g, i) => g === null ? -1 : i).filter(i => i >= 0); if (!live.length) return; const i = live[Math.floor(Math.random() * live.length)]; SR.got[i] = null; srDraw(); srSt('Se perdió la pieza ' + (i + 1) + ' en el camino.', 'bad'); });
+$('srAlter').addEventListener('click', () => { const i = SR.got.findIndex(g => g !== null); if (i < 0) return; SR.got[i] = SR.got[i] + '!'; srDraw(); srSt('Alguien cambió la pieza ' + (i + 1) + ' (prueba).', 'bad'); });
+$('srResend').addEventListener('click', async () => {
+  const fix = []; for (let i = 0; i < SR.parts.length; i++) { const g = SR.got[i]; if (g === null || await sha(g) !== SR.hs[i]) { SR.got[i] = SR.parts[i]; fix.push(i + 1); } }
+  srDraw(); srSt(fix.length ? 'Reenviadas solo las piezas: ' + fix.join(', ') + '.' : 'No faltaba nada: no se reenvía.');
+});
+$('srVerify').addEventListener('click', async () => {
+  if (SR.got.some(g => g === null)) { srDraw(); srSt('Falta una pieza: no se puede reconstruir. Reenvía lo que falta.', 'bad'); window.phenomApp.lastVerify = 'falta'; return; }
+  const hb = await Promise.all(SR.got.map(sha)), r = await sha(hb.join('')), ok = r === SR.root;
+  srDraw(hb.map((h, i) => h === SR.hs[i] ? 'ok' : 'bad'));
+  srSt(ok ? 'ÍNTEGRO ✓ · raíz coincide (' + r.slice(0, 16) + '…) · mensaje: "' + SR.got.join('') + '"' : 'ALTERADO ✗ · la raíz no coincide; se marca la pieza cambiada', ok ? 'ok' : 'bad');
+  window.phenomApp.lastVerify = ok ? 'ok' : 'alterado';
+});
 addEventListener('hashchange', render);
 addEventListener('online', render); addEventListener('offline', render);
 if (!RM) document.querySelectorAll('.tilt').forEach(c => {
