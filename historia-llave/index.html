@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phenom · Historia de la llave (versión de prueba)</title>
+<meta name="description" content="Todas las versiones de la llave, Split Run, Merkaba y el teleport de Phenom, en orden, con lo que hacía cada una y lo que no probó.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="../app-caja/icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="top"><span class="pill sm">Versión de prueba</span><span class="lang" aria-label="Idioma: español">ES</span></div>
+<header class="hd"><a href="#main" class="brand"><img src="../app-caja/icons/phenom-logo.svg" alt="" width="40" height="40"><span>PHENOM</span></a></header>
+<main id="main">
+<section class="screen">
+  <p class="lbl">Historia de la llave</p>
+  <h1>De dónde vino y a dónde va.</h1>
+  <p class="lead">30 pasos, en orden. Cada uno dice lo que hacía, lo que probó y lo que no. Casi todo es simulación, demo o testnet: nada mueve dinero real.</p>
+  <ol class="evo">
+    <li><p>Células y geometría: 24 células en 8 grupos de 3 y la reserva E.</p></li>
+    <li><p>Llaves firmadas y quórum: cada célula firma y 2 de 3 deciden.</p></li>
+    <li><p>Teleport y Split Run: el trabajo y los archivos viajan en piezas con huella.</p></li>
+    <li><p>Entrega verificada y pagos en testnet: escrow, recibos y Deli de prueba.</p></li>
+    <li><p>Apps limpias: tres botones, la llave escondida detrás.</p></li>
+  </ol>
+  <p class="muted">Las fechas salen del historial de git (hora de Nueva York). Cuando no se pudo comprobar, dice «fecha sin verificar». Los enlaces solo aparecen si la página responde. Los repositorios privados no llevan enlace.</p>
+</section>
+<section class="screen">
+  <p class="lbl">Línea de tiempo</p>
+  <ul class="tl">
+<li><p class="lbl">fecha sin verificar (antes del 20 oct 2026)</p><h2>Diagramas originales en JPG</h2><p>Dibujos de las células, la llave y la reserva E: el punto de partida de la geometría.</p><dl class="kv"><dt>Probó</dt><dd>La idea visual: cuadrado, puntos cardinales, triángulo, centro E.</dd><dt>No probó</dt><dd>Nada técnico; eran dibujos.</dd><dt>Estado hoy</dt><dd>No disponibles: no aparecen en los repositorios revisados.</dd></dl><p><span class="muted">sin enlace</span></p></li>
+<li><p class="lbl">20 oct 2026</p><h2>Iaconteol · Split Run Genesis</h2><p>Motor en Python: 8 procesos en una máquina reparten tareas con una cola persistente en SQLite.</p><dl class="kv"><dt>Probó</dt><dd>Que una tarea grande se puede dividir, recuperar tras una caída y unir.</dd><dt>No probó</dt><dd>Comunicación directa entre células o una red de varios ordenadores.</dd><dt>Estado hoy</dt><dd>Repositorio público.</dd></dl><p><a href="https://github.com/PherSAA/Iaconteol">Abrir →</a></p></li>
+<li><p class="lbl">22 oct 2026</p><h2>Phenom ADN · simulación</h2><p>Simulación local en JavaScript: 24 células (C1–C24) en 8 grupos de 3 y reserva E con energía en unidades ficticias.</p><dl class="kv"><dt>Probó</dt><dd>El reparto de tareas y la rotación celular, como modelo.</dd><dt>No probó</dt><dd>Ningún mecanismo de ADN biológico ni generación de energía (lo dice su README).</dd><dt>Estado hoy</dt><dd>Repositorio público; sin página publicada.</dd></dl><p><a href="https://github.com/PherSAA/phenom-adn-simulacion">Abrir →</a></p></li>
+<li><p class="lbl">24 oct 2026</p><h2>La llave firmada (ed25519)</h2><p>Cada célula firma su resultado; se rechazan firmas falsas, revocadas o reenviadas (nonce).</p><dl class="kv"><dt>Probó</dt><dd>Firmas reales ed25519 con pruebas automáticas, en simulación.</dd><dt>No probó</dt><dd>Uso con dinero real.</dd><dt>Estado hoy</dt><dd>En phenom-adn-simulacion y en phenom-agent-api (privado).</dd></dl><p><a href="https://github.com/PherSAA/phenom-adn-simulacion">Abrir →</a></p></li>
+<li><p class="lbl">24 oct 2026</p><h2>Firmas XRPL por célula (TESTNET)</h2><p>Servidor de prueba: cada worker tiene llaves XRPL de testnet; antes de contar un resultado verifica firma, registro y nonce.</p><dl class="kv"><dt>Probó</dt><dd>Verificación en el servidor, solo testnet.</dd><dt>No probó</dt><dd>Mainnet o dinero real.</dd><dt>Estado hoy</dt><dd>phenom-agent-api: repositorio privado (docs/llave-firmas.md).</dd></dl><p><span class="muted">sin enlace</span></p></li>
+<li><p class="lbl">25 oct 2026</p><h2>Quórum 2 de 3 y servicios</h2><p>La misma tarea a 2 células; si no coinciden, decide una 3.ª. Lista de servicios posibles.</p><dl class="kv"><dt>Probó</dt><dd>Mayoría 2 de 3 y marcas a la célula que discrepa, con pruebas automáticas.</dd><dt>No probó</dt><dd>Clientes o precios: ninguno validado.</dd><dt>Estado hoy</dt><dd>phenom-agent-api: repositorio privado (quorum.md, servicios-llave.md, llave-roadmap.md).</dd></dl><p><span class="muted">sin enlace</span></p></li>
+<li><p class="lbl">26 oct 2026</p><h2>SPLIT RUN · juego</h2><p>Juego web: girar el tiempo para salvar una célula. Animación con Math.random.</p><dl class="kv"><dt>Probó</dt><dd>Que la idea se entiende jugando.</dd><dt>No probó</dt><dd>Nada técnico: es un juego.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../index.html">Abrir →</a></p></li>
+<li><p class="lbl">26 oct 2026</p><h2>Split Run Pay · app</h2><p>App de simulación: el anillo gira para pagar o reembolsar con saldos de demostración.</p><dl class="kv"><dt>Probó</dt><dd>El gesto de «girar para pagar».</dd><dt>No probó</dt><dd>No mueve dinero, sin llaves reales (lo dice su README).</dd><dt>Estado hoy</dt><dd>Repositorio privado.</dd></dl><p><span class="muted">sin enlace</span></p></li>
+<li><p class="lbl">fecha sin verificar</p><h2>Split Run v2, v3, v4 y sp.html</h2><p>Versiones anteriores del juego.</p><dl class="kv"><dt>Probó</dt><dd>—</dd><dt>No probó</dt><dd>—</dd><dt>Estado hoy</dt><dd>Ya no están en línea: devuelven 404 (comprobado con curl el 1 nov 2026). Otros juegos están en repositorios privados.</dd></dl><p><span class="muted">sin enlace</span></p></li>
+<li><p class="lbl">27 oct 2026</p><h2>Resiliencia sin conexión</h2><p>Prueba de la hipótesis «E nunca se queda sin energía» con un modelo cerrado.</p><dl class="kv"><dt>Probó</dt><dd>H1 refutada sin ingreso externo; H2 y H3 condicionales: sin red solo se firman intenciones y la liquidación espera a la red.</dd><dt>No probó</dt><dd>Teléfonos o equipos reales (H4 refutada sin fuente externa).</dd><dt>Estado hoy</dt><dd>phenom-agent-api: repositorio privado (resiliencia-hipotesis.md).</dd></dl><p><span class="muted">sin enlace</span></p></li>
+<li><p class="lbl">27 oct 2026</p><h2>Planificador «metro»</h2><p>Como el metro: más células en hora pico, pocas de noche, siempre un servicio mínimo.</p><dl class="kv"><dt>Probó</dt><dd>El reparto, en simulación con firmas reales.</dd><dt>No probó</dt><dd>Tráfico real.</dd><dt>Estado hoy</dt><dd>phenom-agent-api: repositorio privado (planificador-metro.md).</dd></dl><p><span class="muted">sin enlace</span></p></li>
+<li><p class="lbl">27 oct 2026</p><h2>Merkaba Cura Rewind</h2><p>Animación visual con lenguaje de ficción («cura», «rewind»).</p><dl class="kv"><dt>Probó</dt><dd>Solo una animación.</dd><dt>No probó</dt><dd>No tiene ningún efecto real ni médico.</dd><dt>Estado hoy</dt><dd>Publicado sin cambios; se conserva como historia.</dd></dl><p><a href="../merkaba.html">Abrir →</a></p></li>
+<li><p class="lbl">27 oct 2026</p><h2>FedEx Cuántico v2.0</h2><p>Animación de «teletransporte» con lenguaje de ficción (qubits, wormhole).</p><dl class="kv"><dt>Probó</dt><dd>Solo una animación.</dd><dt>No probó</dt><dd>No hay teletransporte ni computación cuántica.</dd><dt>Estado hoy</dt><dd>Publicado sin cambios; se conserva como historia.</dd></dl><p><a href="../fedex.html">Abrir →</a></p></li>
+<li><p class="lbl">27 oct 2026</p><h2>Merkaba Fusion v3 · v4 · v5</h2><p>Animaciones de transmisión: las células viajan de origen a destino. La v5 ya dice «metáfora, no es teletransportación real».</p><dl class="kv"><dt>Probó</dt><dd>La imagen del teleport como transmisión de datos.</dd><dt>No probó</dt><dd>No hay transmisión real de datos.</dd><dt>Estado hoy</dt><dd>Publicado (v3: merkaba-fusion.html, v4: merkaba-fusion-v4.html).</dd></dl><p><a href="../merkaba-fusion-v5.html">Abrir →</a></p></li>
+<li><p class="lbl">27 oct 2026</p><h2>Phenom v1.1 · unificada</h2><p>Une La Llave, Merkaba y Split Run: Split Run con Web Workers reales y un permiso firmado ed25519 con llave efímera.</p><dl class="kv"><dt>Probó</dt><dd>Que el trabajo dividido da el mismo resultado que la fórmula exacta.</dd><dt>No probó</dt><dd>Uso real: demo, testnet, sin dinero real.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../phenom-v1.1.html">Abrir →</a></p></li>
+<li><p class="lbl">27 oct 2026</p><h2>Phenom v1.2 · Envío verificado</h2><p>Un archivo en piezas con huella SHA-256 que viaja por 3 rutas simuladas y se rearma.</p><dl class="kv"><dt>Probó</dt><dd>Que se detecta la pieza alterada o perdida y se reenvía.</dd><dt>No probó</dt><dd>Un sistema seguro de producción (lo dice la página).</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../phenom-v1.2.html">Abrir →</a></p></li>
+<li><p class="lbl">27 oct 2026</p><h2>Phenom v1.3 · Pago en testnet</h2><p>Muestra una corrida real en XRPL testnet: un escrow condicionado se libera si el archivo está íntegro y se cancela si fue alterado.</p><dl class="kv"><dt>Probó</dt><dd>Escrow real en testnet (XRP sin valor).</dd><dt>No probó</dt><dd>Dinero real ni asesoría legal.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../phenom-v1.3.html">Abrir →</a></p></li>
+<li><p class="lbl">28 oct 2026</p><h2>Phenom v1.2-teleport</h2><p>Animación de transmisión hacia E con diagrama C1–C24.</p><dl class="kv"><dt>Probó</dt><dd>Solo la animación.</dd><dt>No probó</dt><dd>No hay transmisión real.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../phenom-v1.2-teleport.html">Abrir →</a></p></li>
+<li><p class="lbl">28 oct 2026</p><h2>Phenom v1.4 · Verificadores 2 de 3</h2><p>Tres verificadores recalculan la huella y firman; con 2 partes Shamir se abre el escrow.</p><dl class="kv"><dt>Probó</dt><dd>Demo y una corrida en testnet.</dd><dt>No probó</dt><dd>Independencia real: los 3 corrían en el mismo script (lo dice la página).</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../phenom-v1.4.html">Abrir →</a></p></li>
+<li><p class="lbl">28 oct 2026</p><h2>Phenom v1.5 · Split Run paralelo</h2><p>4 piezas por 4 túneles a distintas velocidades; E rearma solo si las 4 huellas coinciden; recibo ECDSA P-256.</p><dl class="kv"><dt>Probó</dt><dd>Reenvío por otra ruta y detección de un byte alterado.</dd><dt>No probó</dt><dd>Red real: los túneles son simulados.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../phenom-v1.5.html">Abrir →</a></p></li>
+<li><p class="lbl">28 oct 2026</p><h2>Phenom v1.7 · Teleport P2P</h2><p>Dos navegadores se conectan directo por WebRTC, pasan las piezas y el receptor firma un recibo.</p><dl class="kv"><dt>Probó</dt><dd>Transmisión real entre navegadores.</dd><dt>No probó</dt><dd>Autenticación de los equipos más allá de copiar y pegar códigos.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../phenom-v1.7.html">Abrir →</a></p></li>
+<li><p class="lbl">fecha sin verificar (archivos fechados 28 oct)</p><h2>La llave · página de demostración</h2><p>Página local con video y capturas: split en curso, falla inyectada y recuperada, quórum, credencial alterada.</p><dl class="kv"><dt>Probó</dt><dd>La demo grabada.</dd><dt>No probó</dt><dd>—</dd><dt>Estado hoy</dt><dd>Solo en la caja de trabajo; no está publicada.</dd></dl><p><span class="muted">sin enlace</span></p></li>
+<li><p class="lbl">29–30 oct 2026</p><h2>Phenom v1.8–v1.17 · Deli y pagos de prueba</h2><p>Diario con cadena SHA-256 + ECDSA (v1.8), invitaciones firmadas (v1.9), Deli con WebRTC caja→cocina (v1.10–v1.14), botón Stripe en modo prueba (v1.15), v1.16 y v1.17 ordenadas.</p><dl class="kv"><dt>Probó</dt><dd>Recibos y auditoría firmados en el navegador.</dd><dt>No probó</dt><dd>Pagos reales: todo en modo prueba.</dd><dt>Estado hoy</dt><dd>Publicado (v1.8 a v1.17).</dd></dl><p><a href="../phenom-v1.17.html">Abrir →</a></p></li>
+<li><p class="lbl">30 oct 2026</p><h2>Vaúlt Xpay · botón</h2><p>Botón dorado animado que cuenta toques.</p><dl class="kv"><dt>Probó</dt><dd>Solo la animación.</dd><dt>No probó</dt><dd>No guarda fondos ni cifra nada.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../vault-button.html">Abrir →</a></p></li>
+<li><p class="lbl">1 nov 2026</p><h2>app-prueba · La llave y Split Run</h2><p>App de prueba con simulación de Split Run (ok / falta / alterado).</p><dl class="kv"><dt>Probó</dt><dd>Detección de piezas perdidas o alteradas.</dd><dt>No probó</dt><dd>Teléfonos reales.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../app-prueba/">Abrir →</a></p></li>
+<li><p class="lbl">1 nov 2026</p><h2>app-limpia</h2><p>El mismo contenido con diseño limpio estilo XRPL.</p><dl class="kv"><dt>Probó</dt><dd>Rapidez: Lighthouse 100/100/100.</dd><dt>No probó</dt><dd>—</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../app-limpia/">Abrir →</a></p></li>
+<li><p class="lbl">1 nov 2026</p><h2>torniquete-prueba</h2><p>Simulación de pases firmados y registro encadenado para torniquetes.</p><dl class="kv"><dt>Probó</dt><dd>La firma y la cadena, en simulación.</dd><dt>No probó</dt><dd>Uso en el metro real.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../torniquete-prueba/">Abrir →</a></p></li>
+<li><p class="lbl">1 nov 2026</p><h2>app-verbo</h2><p>Palabra → Sello → Verificación: SHA-256 + ECDSA P-256 en vivo.</p><dl class="kv"><dt>Probó</dt><dd>Detección de cambios (ROTA).</dd><dt>No probó</dt><dd>Identidad: la llave es de ejemplo.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../app-verbo/">Abrir →</a></p></li>
+<li><p class="lbl">1 nov 2026</p><h2>app-llave-real</h2><p>Sellar, Enviar por piezas y Verificar, con llavero, revocación, nonce y una 2.ª pestaña receptora.</p><dl class="kv"><dt>Probó</dt><dd>Rechazo de llaves desconocidas o revocadas y de repeticiones; reenvío solo de las piezas que faltan.</dd><dt>No probó</dt><dd>Envío entre teléfonos (WebRTC) ni valor legal.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../app-llave-real/">Abrir →</a></p></li>
+<li><p class="lbl">1 nov 2026</p><h2>app-caja</h2><p>Caja con recibos firmados y libro encadenado; plan Normal y Pago (demo, dorado).</p><dl class="kv"><dt>Probó</dt><dd>Libro verificado y exportado; la passkey se probó en el emulador.</dd><dt>No probó</dt><dd>Pagos reales: todo simulado.</dd><dt>Estado hoy</dt><dd>Publicado.</dd></dl><p><a href="../app-caja/">Abrir →</a></p></li>
+  </ul>
+</section>
+<section class="screen">
+  <p class="lbl">Qué sigue</p>
+  <h1>Lo próximo.</h1>
+  <ol class="evo">
+    <li><p>Probar el envío entre dos teléfonos reales.</p></li>
+    <li><p>Publicar la huella del libro en un memo de XRPL testnet, para que cualquiera detecte una reescritura.</p></li>
+    <li><p>Estado compartido, para que la revocación y los nonces no sean solo locales.</p></li>
+    <li><p>Pago condicionado (escrow liberado con firmas), solo en testnet hasta la revisión legal.</p></li>
+    <li><p>Pilotos con 2–3 clientes y precios por definir.</p></li>
+  </ol>
+  <p class="muted">Aparcado: el experimento de «desplazamiento cuántico» (túnel simulado) salió peor que el método clásico.</p>
+</section>
+</main>
+<footer class="ft">Versión de prueba · sin dinero real · <a href="../app-caja/">App Caja</a></footer>
+</body>
+</html>
