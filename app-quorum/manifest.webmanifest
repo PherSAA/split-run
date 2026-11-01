@@ -1,0 +1,15 @@
+{
+  "name": "Phenom · Quórum (prueba)",
+  "short_name": "Phenom",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "description": "Versión de prueba: un grupo de 3 células verifica un informe por quórum 2 de 3. Datos de ejemplo.",
+  "icons": [
+    { "src": "icons/phenom-logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/phenom-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
