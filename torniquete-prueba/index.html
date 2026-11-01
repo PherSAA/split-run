@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Torniquete verificable · simulación (prueba)</title>
+<meta name="description" content="Simulación de prueba: pases firmados verificados sin internet y registro encadenado de cada toque. Datos de ejemplo. Sin relación con la MTA.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="top"><span class="pill sm">Simulación · datos de ejemplo</span><span class="lang" aria-label="Idioma: español">ES</span></div>
+<header class="hd">
+  <a href="#inicio" class="brand"><img src="icons/phenom-logo.svg" alt="" width="40" height="40"><span>PHENOM</span></a>
+  <button id="menuBtn" class="menu" aria-expanded="false" aria-controls="nav" aria-label="Menú"><span></span><span></span><span></span></button>
+</header>
+<nav id="nav" hidden aria-label="Secciones">
+  <a href="#inicio">Inicio</a><a href="#torniquete">Torniquete</a><a href="#cadena">Registro encadenado</a><a href="#toque">Un toque</a><a href="#zonas">Dónde se evade</a><a href="#limites">Qué hace y qué NO hace</a><a href="#investigacion">Investigación</a>
+</nav>
+<main id="main">
+
+<section class="screen" data-screen="inicio">
+  <p class="lbl">Idea de prueba · sin relación con la MTA</p>
+  <h1>Cada pase se verifica. Cada toque queda sellado.</h1>
+  <p class="lead">Un emisor firma pases cortos. El torniquete los comprueba sin internet y anota cada toque en una cadena que no se puede cambiar sin que se note.</p>
+  <a class="pill" href="#torniquete">Probar el torniquete</a>
+  <ul class="rows">
+    <li><p class="lbl">01</p><h2>Pase firmado</h2><p>Sin datos personales: id, vence, usos y firma ECDSA.</p><a class="more" href="#torniquete">Leer más →</a></li>
+    <li><p class="lbl">02</p><h2>Registro encadenado</h2><p>Cada toque, válido o rechazado, enlazado con SHA-256.</p><a class="more" href="#cadena">Leer más →</a></li>
+    <li><p class="lbl">03</p><h2>Dónde se evade</h2><p>Rechazos por estación y hora, con reglas simples.</p><a class="more" href="#zonas">Leer más →</a></li>
+    <li><p class="lbl">04</p><h2>Límites honestos</h2><p>No impide saltar el torniquete.</p><a class="more" href="#limites">Leer más →</a></li>
+  </ul>
+</section>
+
+<section class="screen" data-screen="torniquete" hidden>
+  <p class="lbl">Torniquete simulado · sin internet</p>
+  <h1>Toca un pase.</h1>
+  <div class="grid2">
+    <label class="lbl" style="margin:0">Estación<select id="est"><option>Estación Norte</option><option>Estación Centro</option><option>Estación Sur</option><option>Estación Este</option></select></label>
+    <label class="lbl" style="margin:0">Hora<select id="hora"></select></label>
+  </div>
+  <div id="gate" class="gate" role="status" aria-live="polite"><b id="gateTxt">Esperando…</b><span id="gateWhy" class="muted">El torniquete solo tiene la clave pública del emisor.</span></div>
+  <div class="casos" id="casos">
+    <button class="pill" data-c="valido">Pase válido<small>Recién firmado por el emisor</small></button>
+    <button class="pill" data-c="caducado">Pase caducado<small>Firmado, pero ya venció</small></button>
+    <button class="pill" data-c="copia">Pase copiado<small>El mismo pase usado otra vez</small></button>
+    <button class="pill" data-c="falso">Pase falsificado<small>Firmado con otra clave</small></button>
+    <button class="pill" data-c="alterado">Pase alterado<small>Le cambiaron la fecha después de firmar</small></button>
+  </div>
+  <button id="btnLote" class="lnk">Generar 40 toques de ejemplo</button>
+  <dl class="kv" id="cola"></dl>
+  <button id="btnSubir" class="pill ghost">Subir registro (simulado)</button>
+</section>
+
+<section class="screen" data-screen="cadena" hidden>
+  <p class="lbl">Registro encadenado · SHA-256</p>
+  <h1>Nadie borra un toque sin que se note.</h1>
+  <p id="chChip" class="chip">Sin toques</p>
+  <div class="acts"><button id="btnVer" class="pill">Verificar cadena</button><button id="btnTamper" class="lnk">Cambiar un dato (prueba)</button></div>
+  <ol class="log" id="log"></ol>
+</section>
+
+<section class="screen" data-screen="toque" hidden>
+  <p class="lbl">Último toque</p>
+  <h1 id="tTitle">Sin toques todavía</h1>
+  <div class="tabs" role="tablist" aria-label="Formato del toque">
+    <button role="tab" aria-selected="true" data-v="simple" id="tSimple">Simple</button><button role="tab" aria-selected="false" data-v="detallado" id="tDet">Detallado</button><button role="tab" aria-selected="false" data-v="bruto" id="tBruto">En bruto</button>
+  </div>
+  <div id="vSimple" class="view" role="tabpanel" aria-labelledby="tSimple"></div>
+  <dl id="vDet" class="view kv" role="tabpanel" aria-labelledby="tDet" hidden></dl>
+  <div id="vBruto" class="view" role="tabpanel" aria-labelledby="tBruto" hidden><pre id="tJson"></pre></div>
+</section>
+
+<section class="screen" data-screen="zonas" hidden>
+  <p class="lbl">Datos de ejemplo · de este registro simulado</p>
+  <h1>Dónde y cuándo hay rechazos.</h1>
+  <p class="lead">Regla simple: 3 o más rechazos en la misma estación y hora = zona a revisar.</p>
+  <div id="zonas"></div>
+  <p class="muted">Solo cuenta toques rechazados. Saltar el torniquete no genera un toque, así que no aparece aquí.</p>
+</section>
+
+<section class="screen" data-screen="limites" hidden>
+  <p class="lbl">Límites honestos</p>
+  <h1>Qué hace y qué NO hace.</h1>
+  <p class="lbl">Hace</p>
+  <dl class="kv">
+    <dt>Bloquea</dt><dd>Pases falsificados, alterados, caducados o copiados.</dd>
+    <dt>Sin internet</dt><dd>El torniquete verifica con la clave pública y sube el registro después.</dd>
+    <dt>Prueba</dt><dd>Cada cobro y cada rechazo quedan en una cadena verificable.</dd>
+    <dt>Muestra</dt><dd>Estaciones y horas con muchos rechazos.</dd>
+    <dt>Privacidad</dt><dd>El pase no lleva nombre, tarjeta ni datos biométricos.</dd>
+  </dl>
+  <p class="lbl">No hace</p>
+  <dl class="kv">
+    <dt>Físico</dt><dd>No impide saltar, empujar o forzar una puerta.</dd>
+    <dt>Cifras</dt><dd>No mide la evasión real: solo ve toques.</dd>
+    <dt>OMNY</dt><dd>No sustituye OMNY ni se conecta a él; es una simulación.</dd>
+    <dt>Copia rápida</dt><dd>Sin internet, dos torniquetes distintos podrían aceptar la misma copia hasta sincronizar.</dd>
+  </dl>
+</section>
+
+<section class="screen" data-screen="investigacion" hidden>
+  <p class="lbl">Fuentes oficiales · consultadas 1 nov 2026</p>
+  <h1>Lo que ya existe.</h1>
+  <ul class="rows">
+    <li><h2>OMNY</h2><p>Sistema por cuenta, sin contacto: tarjeta bancaria, teléfono, reloj o tarjeta OMNY. Contrato con Cubic Transportation Systems (adjudicado el 1 nov 2017).</p><a class="more" href="https://www.mta.info/document/140456">Documento del Board (MTA) →</a><br><a class="more" href="https://omny.info/how-omny-works">Cómo funciona (omny.info) →</a></li>
+    <li><h2>Evasión en el metro</h2><p>Según la MTA, bajó de 12.7% en 2024 a 10.2% en 2025.</p><a class="more" href="https://www.mta.info/agency/new-york-city-transit/ridership/2025">Ridership 2025 (mta.info) →</a></li>
+    <li><h2>Pérdidas</h2><p>El panel Blue-Ribbon estimó $690 millones en pasajes y peajes no pagados en 2022 (citado por la MTA).</p><a class="more" href="https://www.mta.info/press-release/icymi-governor-hochul-announces-subway-fare-evasion-down-26-percent-new-york-city">Comunicado (mta.info) →</a></li>
+    <li><h2>Puertas nuevas</h2><p>Piloto en 20 estaciones: −35% de evasión en promedio. Siguen 20 estaciones más; plan de 150 estaciones (1.100 millones, Plan de Capital 2025–2029).</p><a class="more" href="https://www.governor.ny.gov/news/governor-hochul-announces-new-subway-gate-pilot-reduced-fare-evasion-35-unveils-next-20">Gobernadora, 7 oct 2026 →</a><br><a class="more" href="https://www.mta.info/project/modern-fare-gates">Modern fare gates (mta.info) →</a></li>
+    <li><h2>Multas</h2><p>Desde el 1 ene 2025, multas por niveles: advertencia, $100, $150. En 2025 ~89% de los casos fueron advertencias.</p><a class="more" href="https://www.mta.info/document/194166">Informe TAB 2025 (mta.info) →</a></li>
+    <li><h2>Privacidad</h2><p>OMNY comparte datos con Cubic como operador; la MTA está sujeta a FOIL y leyes de privacidad de NY. La ley de NYC sobre biometría (Adm. Code §22-1201) exige avisos a comercios; no confirmé si aplica a la MTA.</p><a class="more" href="https://omny.info/privacy-policy">Privacidad OMNY →</a><br><a class="more" href="https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCadmin/0-0-0-42626">Código NYC §22-1201 →</a></li>
+  </ul>
+  <p class="src">No verificado: cómo valida OMNY cada toque por dentro (en línea o sin conexión) y si ya usa firmas en los lectores. No encontré esa información en fuentes oficiales.</p>
+</section>
+</main>
+<footer class="ft">Simulación de prueba · datos de ejemplo · sin relación con la MTA ni con OMNY</footer>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
