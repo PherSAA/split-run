@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phenom · Fácil (versión de prueba)</title>
+<meta name="description" content="Phenom, versión de prueba: enviar y recibir un informe sellado con dos botones. Datos de ejemplo.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Phenom">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/phenom-logo.svg">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="hd">
+  <button class="back" id="atras" hidden aria-label="Volver al inicio">‹ Inicio</button>
+  <span class="brand"><img src="icons/phenom-logo.svg" alt="" width="32" height="32">PHENOM</span>
+  <span class="pill">Versión de prueba · datos de ejemplo</span>
+</header>
+<main id="main">
+
+<section data-s="nombre" hidden>
+  <h1>¿Cómo te llamas?</h1>
+  <p class="lead">Así te verá la otra persona cuando le envíes algo.</p>
+  <form id="fNombre"><label for="nNombre" class="sr">Tu nombre</label>
+  <input id="nNombre" maxlength="24" autocomplete="name" placeholder="Tu nombre" required>
+  <button class="big go" type="submit">Listo</button></form>
+</section>
+
+<section data-s="inicio" hidden>
+  <p class="hola" id="hola"></p>
+  <button class="big go" id="bEnviar">Enviar</button>
+  <button class="big alt" id="bRecibir">Recibir</button>
+  <div class="row"><button class="lnk" id="bEnvios">Mis envíos</button><button class="lnk circ" id="bAyuda" aria-label="Ayuda">?</button></div>
+  <div class="hint" id="iosHint" hidden><p>Para tenerla a mano: toca <b>Compartir</b> (el cuadro con flecha ↑) y luego <b>«Añadir a pantalla de inicio»</b>.</p><button class="lnk" id="iosOk">Entendido</button></div>
+</section>
+
+<section data-s="enviar" hidden>
+  <h1>¿Qué envías?</h1>
+  <div class="tiles"><button class="tile" data-tipo="obra" aria-pressed="true">🏗️<br>Obra</button><button class="tile" data-tipo="techo" aria-pressed="false">🏠<br>Techo</button></div>
+  <form id="fEnviar">
+    <div data-solo="obra"><label>Obra<input id="oObra" value="Casa ejemplo, calle 10"></label><label>Avance (%)<input id="oAvance" type="number" inputmode="numeric" min="0" max="100" value="60"></label><label>Nota<input id="oNota" value="Muros listos (ejemplo)"></label></div>
+    <div data-solo="techo" hidden><label>Cliente<input id="tCli" value="Cliente de ejemplo"></label><label>Trabajo<input id="tTrab" value="Impermeabilización (ejemplo)"></label><label>Años de garantía<input id="tAnos" type="number" inputmode="numeric" min="0" max="30" value="5"></label></div>
+    <label class="foto">📷 Foto (opcional)<input id="eFoto" type="file" accept="image/*"></label>
+    <p class="muted" id="eFotoInfo">La foto no viaja: solo su sello, para comprobar después que es la misma.</p>
+    <button class="big go" id="eEnviar" type="submit">Enviar</button>
+  </form>
+</section>
+
+<section data-s="enviado" hidden>
+  <h1>Enviado ✓</h1>
+  <p class="lead">Cuando la otra persona te devuelva la confirmación, ábrela y verás «Entregado y confirmado».</p>
+  <p class="muted" id="eModo"></p>
+  <button class="big alt" id="eOtra">Compartir otra vez</button>
+  <div class="row"><button class="lnk" id="eCopiar">Copiar enlace</button><button class="lnk" id="eArchivo">Descargar archivo</button></div>
+</section>
+
+<section data-s="recibir" hidden>
+  <h1>Recibir</h1>
+  <p class="lead">Toca el enlace que te enviaron, o abre el archivo. Se comprueba solo.</p>
+  <label class="big alt file">Abrir archivo<input id="rArchivo" type="file" accept=".phenom,text/plain,application/octet-stream"></label>
+  <details class="pegar"><summary>Pegar código</summary><label for="rTexto" class="sr">Código o enlace</label><textarea id="rTexto" rows="4" placeholder="Pega aquí el enlace"></textarea><button class="big alt" id="rAbrir">Comprobar</button></details>
+</section>
+
+<section data-s="res" hidden>
+  <div id="rBig" class="verdict" role="status" aria-live="polite"></div>
+  <p class="lead" id="rMsg"></p>
+  <p class="muted" id="rQue"></p>
+  <div id="rConfiar" hidden class="card"><p class="q" id="rConfiarQ"></p><button class="big go" id="rSi">Sí, confiar</button><button class="lnk" id="rNo">No</button>
+    <details><summary>Detalles</summary><p class="muted">Código del sello de esta persona: <b id="rFp"></b>. Si quieres estar seguro, pídele que te diga el suyo (está en «?»).</p></details></div>
+  <button class="big go" id="rConfirmar" hidden>Confirmar recepción</button>
+  <div id="rAv" hidden><div class="tabs" role="tablist"><button role="tab" data-t="s" aria-selected="true">Simple</button><button role="tab" data-t="d" aria-selected="false">Detallado</button><button role="tab" data-t="b" aria-selected="false">En bruto</button></div>
+  <div class="view" data-p="s"></div><div class="view" data-p="d" hidden></div><div class="view" data-p="b" hidden></div></div>
+</section>
+
+<section data-s="envios" hidden>
+  <h1>Mis envíos</h1>
+  <ul id="lista" class="lista"></ul>
+</section>
+
+<section data-s="ayuda" hidden>
+  <h1>Ayuda</h1>
+  <ol class="pasos"><li><b>Enviar</b>: elige Obra o Techo y toca Enviar. Mándalo por WhatsApp, correo o mensaje.</li><li><b>La otra persona</b> toca el enlace. Ve <b>Verificado ✓</b> si no cambió nada y toca <b>Confirmar recepción</b>.</li><li><b>Tú</b> abres esa confirmación y ves <b>Entregado y confirmado ✓</b>.</li></ol>
+  <p>No hace falta que los dos teléfonos estén encendidos a la vez.</p>
+  <p class="muted">Tu nombre: <b id="aNombre"></b> · Código de tu sello: <b id="aFp"></b></p>
+  <button class="lnk" id="aCambiar">Cambiar mi nombre</button>
+  <h2>Límites</h2>
+  <ul class="muted lim"><li>Es una versión de prueba con datos de ejemplo.</li><li>Si un chat corta o cambia el enlace, saldrá «Cambió ✗»: envíalo como archivo.</li><li>Tu sello vive solo en este teléfono y navegador; si borras los datos de Safari, se crea uno nuevo.</li><li>En iPhone, Safari y el ícono de la pantalla de inicio guardan datos por separado: usa siempre el mismo.</li><li>Verificado = no cambió y lo firmó esa persona; no prueba que sea verdad ni tiene valor legal.</li></ul>
+  <label class="sw"><input type="checkbox" id="avanzado"> Modo avanzado</label>
+  <div id="avz" hidden>
+    <h2>Personas de confianza</h2><ul id="llavero" class="lista"></ul>
+    <p class="muted"><a href="docs/FACIL.md">Cómo funciona (docs)</a> · <a href="../app-sobre/">Versión completa (app-sobre)</a></p>
+  </div>
+</section>
+
+</main>
+<footer class="ft">Versión de prueba. Verificado = no cambió y lo firmó esa persona; no prueba que sea verdad ni tiene valor legal.</footer>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
