@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phenom · Pago en testnet (versión de prueba)</title>
+<meta name="description" content="Versión de prueba: pago en la red de PRUEBA de XRPL (testnet) con recibo firmado. Sin dinero real.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/phenom-logo.svg">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="hd">
+  <button class="back" id="atras" hidden aria-label="Volver al inicio">‹ Inicio</button>
+  <span class="brand"><img src="icons/phenom-logo.svg" alt="" width="32" height="32">PHENOM</span>
+  <span class="pill">TESTNET · sin dinero real</span>
+</header>
+<main id="main">
+
+<section data-s="inicio" hidden>
+  <h1>Pago de prueba<br>con recibo firmado</h1>
+  <p class="lead">Usa la red de <b>prueba</b> de XRPL. Los XRP de prueba no valen nada.</p>
+  <button class="big go" id="bPagar">Pagar (prueba)</button>
+  <button class="big alt" id="bRecibir">Recibir / verificar</button>
+  <div class="row"><button class="lnk" id="bRecibos">Mis recibos</button><button class="lnk circ" id="bAyuda" aria-label="Ayuda">?</button></div>
+</section>
+
+<section data-s="pagar" hidden>
+  <h1>Pagar (prueba)</h1>
+  <form id="fPagar">
+    <label>Tu nombre<input id="pNombre" maxlength="24" value="Ana (prueba)"></label>
+    <label>Para (nombre)<input id="pPara" maxlength="24" value="Bruno (prueba)"></label>
+    <label>Dirección testnet del receptor<input id="pDest" autocomplete="off" spellcheck="false"></label>
+    <p class="muted" id="pDestInfo">Viene una dirección de prueba nueva. Si el receptor te pasó la suya («Mi dirección de prueba»), pégala aquí.</p>
+    <label>Monto (XRP de prueba)<input id="pMonto" type="number" inputmode="decimal" min="1" max="100" step="1" value="10"></label>
+    <label>Concepto<input id="pConcepto" maxlength="60" value="Recibo de ejemplo"></label>
+    <button class="big go" id="pEnviar" type="submit">Pagar (prueba)</button>
+  </form>
+</section>
+
+<section data-s="progreso" hidden>
+  <h1>Pagando…</h1>
+  <ol class="pasos" id="prog" aria-live="polite"></ol>
+  <p class="muted" id="progErr"></p>
+  <button class="big alt" id="progReintentar" hidden>Reintentar</button>
+</section>
+
+<section data-s="recibo" hidden>
+  <div id="vBig" class="verdict" role="status" aria-live="polite"></div>
+  <p class="lead" id="vMsg"></p>
+  <dl class="kv" id="vKv"></dl>
+  <p><a id="vExp" target="_blank" rel="noopener">Ver en el explorador de testnet ↗</a></p>
+  <button class="big go" id="vCompartir" hidden>Compartir recibo</button>
+  <button class="big go" id="vConfirmar" hidden>Confirmar recepción</button>
+  <div class="row"><button class="lnk" id="vCopiar" hidden>Copiar enlace</button><button class="lnk" id="vArchivo" hidden>Descargar archivo</button></div>
+  <details id="vDet"><summary>Detalles</summary><dl class="kv" id="vPasos"></dl></details>
+</section>
+
+<section data-s="recibir" hidden>
+  <h1>Recibir</h1>
+  <p class="lead">Toca el enlace del recibo o abre el archivo. Se verifica la firma y, si hay internet, el pago en testnet.</p>
+  <label class="big alt file">Abrir archivo<input id="rArchivo" type="file" accept=".phenom,text/plain,application/octet-stream"></label>
+  <details><summary>Pegar código</summary><label for="rTexto" class="sr">Código o enlace</label><textarea id="rTexto" rows="4" placeholder="Pega aquí el enlace"></textarea><button class="big alt" id="rAbrir">Verificar</button></details>
+  <h2>Mi dirección de prueba</h2>
+  <p class="muted">Pásasela a quien te paga para que el pago llegue a una billetera de prueba de este teléfono.</p>
+  <p class="addr" id="rDir">—</p>
+  <div class="row"><button class="lnk" id="rDirCrear">Ver mi dirección</button><button class="lnk" id="rDirCopiar">Copiar</button></div>
+</section>
+
+<section data-s="recibos" hidden>
+  <h1>Mis recibos</h1>
+  <ul id="lista" class="lista"></ul>
+</section>
+
+<section data-s="ayuda" hidden>
+  <h1>Ayuda</h1>
+  <ol class="pasos"><li><b>Pagar (prueba)</b> crea una billetera de PRUEBA en este teléfono, la llena con el grifo de testnet y envía el pago. En el pago va la huella (SHA-256) del recibo.</li><li>Compartes el <b>recibo firmado</b>. El receptor ve <b>Verificado ✓</b> si la firma es válida y el pago en testnet coincide.</li><li>El receptor toca <b>Confirmar recepción</b> y te devuelve una confirmación firmada.</li></ol>
+  <h2>Límites</h2>
+  <ul class="muted lim"><li>Solo red de PRUEBA (testnet). Sin dinero real. La testnet se reinicia de vez en cuando y los pagos antiguos pueden desaparecer.</li><li>La semilla de prueba se guarda solo en este teléfono, sin cifrar. Nunca pongas aquí una billetera real.</li><li>No guarda fondos, no es una licencia ni asesoría legal o financiera.</li><li>El recibo prueba que esa firma lo firmó y que el pago de prueba existe; no prueba que sea verdad ni tiene valor legal.</li><li>Sin internet solo se puede verificar la firma, no el pago.</li><li>Se conecta a la red de prueba de XRPL por websocket y al grifo de testnet; nada más.</li></ul>
+  <p class="muted">Código de tu firma: <b id="aFp"></b></p>
+  <button class="lnk" id="aBorrar">Borrar billetera de prueba</button>
+  <p class="muted"><a href="docs/PAGO-TESTNET.md">Cómo funciona (docs)</a></p>
+</section>
+
+</main>
+<footer class="ft">Versión de prueba · TESTNET, sin dinero real. No guarda fondos, no es licencia ni asesoría legal. Verificado = firma válida y pago de prueba coincide; no prueba que sea verdad.</footer>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
