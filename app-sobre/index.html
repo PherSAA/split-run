@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phenom · Sobre (versión de prueba)</title>
+<meta name="description" content="Phenom, versión de prueba: enviar un informe sellado como sobre, sin que los dos teléfonos estén conectados a la vez. Datos de ejemplo.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/phenom-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="top"><span class="pill sm">Versión de prueba · datos de ejemplo</span><span class="lang" aria-label="Idioma: español">ES</span></div>
+<header class="hd">
+  <a href="#inicio" class="brand"><img src="icons/phenom-logo.svg" alt="" width="40" height="40"><span>PHENOM</span></a>
+  <button id="menuBtn" class="menu" aria-expanded="false" aria-controls="nav" aria-label="Menú"><span></span><span></span><span></span></button>
+</header>
+<nav id="nav" hidden aria-label="Secciones">
+  <a href="#inicio">Inicio</a><a href="#tarjeta">Mi tarjeta</a><a href="#enviar">Enviar sobre</a><a href="#abrir">Abrir sobre</a><a href="#bandeja">Bandeja</a><a href="#llavero">Llavero</a>
+  <p class="grp">Más</p>
+  <a href="#vivo">Conexión en vivo (opcional)</a><a href="#limites">Límites honestos</a><a href="docs/SOBRE.md">Cómo funciona (documento)</a><a href="../app-2telefonos/">Prueba con 2 teléfonos</a>
+</nav>
+<main id="main">
+
+<section class="screen" data-screen="inicio">
+  <p class="lbl">Sobre · prueba</p>
+  <h1>Sin estar conectados a la vez.</h1>
+  <p class="lead">Sellas un informe y lo mandas como un sobre: enlace, archivo o QR. El otro teléfono lo abre cuando quiera, incluso sin internet, y te devuelve un acuse firmado.</p>
+  <div class="big"><a class="pill" href="#enviar">Enviar un sobre</a><a class="pill ghost" href="#abrir">Abrir un sobre</a></div>
+  <p class="muted">Tu huella: <span class="fp" id="yoFp">…</span></p>
+  <ul class="rows">
+    <li><p class="lbl">01 · Una sola vez</p><p>Cada teléfono comparte su <a href="#tarjeta">tarjeta</a>. El otro la abre y toca Confiar. No caduca.</p></li>
+    <li><p class="lbl">02 · Enviar</p><p>Sella y comparte el sobre por WhatsApp, correo, archivo o QR.</p></li>
+    <li><p class="lbl">03 · Abrir y acusar</p><p>El otro ve Verificado ✓ o ROTA ✗ y te devuelve un acuse firmado.</p></li>
+  </ul>
+</section>
+
+<section class="screen" data-screen="tarjeta" hidden>
+  <p class="lbl">Mi tarjeta · permanente</p>
+  <h1>Tu tarjeta.</h1>
+  <p class="lead">Compártela una vez con el otro teléfono. Contiene solo tu llave pública, tu nombre y tu huella. No caduca.</p>
+  <label class="muted">Nombre corto<input id="tNombre" maxlength="24"></label>
+  <dl class="kv"><dt>Huella</dt><dd><span class="fp" id="tFp">…</span></dd></dl>
+  <canvas class="qr" id="tQr" width="10" height="10" role="img" aria-label="QR de mi tarjeta"></canvas>
+  <label class="muted">Enlace de mi tarjeta<textarea class="code" id="tLink" readonly></textarea></label>
+  <div><button class="pill" id="tCompartir" type="button">Compartir tarjeta</button><button class="pill ghost" id="tCopiar" type="button">Copiar enlace</button></div>
+  <p class="muted">La llave privada nunca sale del teléfono y no se puede exportar.</p>
+</section>
+
+<section class="screen" data-screen="enviar" hidden>
+  <p class="lbl">Enviar sobre</p>
+  <h1>Sellar y enviar.</h1>
+  <div class="choose"><button type="button" data-tipo="obra" aria-pressed="true">Obra</button><button type="button" data-tipo="techo" aria-pressed="false">Techo</button></div>
+  <form id="fForm" onsubmit="return false">
+    <div data-solo="obra"><label>Obra<input id="oObra" value="Remodelación cocina · ejemplo"></label>
+    <label>Avance (%)<input id="oAvance" type="number" value="60"></label>
+    <label>Nota<input id="oNota" value="Instalación eléctrica revisada."></label></div>
+    <div data-solo="techo" hidden><label>Cliente<input id="tCli" value="Cliente de ejemplo"></label>
+    <label>Trabajo<input id="tTrab" value="Reparación de goteras en área de 20 m²"></label>
+    <label>Años de garantía<input id="tAnos" type="number" value="5"></label></div>
+  </form>
+  <div class="big"><button class="pill" id="eSellar" type="button">Sellar y crear sobre</button></div>
+  <div id="eSobre" hidden>
+    <span class="chip ok">Sobre listo</span>
+    <dl class="kv" id="eTam"></dl>
+    <ul class="rows metodos" id="eMetodos"></ul>
+    <div><button class="pill" id="eCompartir" type="button">Compartir sobre</button><button class="pill ghost" id="eCopiar" type="button">Copiar enlace</button><button class="pill ghost" id="eArchivo" type="button">Descargar archivo</button></div>
+    <canvas class="qr" id="eQr" width="10" height="10" role="img" aria-label="QR del sobre"></canvas>
+    <p class="muted" id="eQrInfo"></p>
+    <label class="muted">Enlace del sobre<textarea class="code" id="eLink" readonly></textarea></label>
+  </div>
+</section>
+
+<section class="screen" data-screen="abrir" hidden>
+  <p class="lbl">Abrir sobre, acuse o tarjeta</p>
+  <h1>Abrir.</h1>
+  <p class="muted">Abre el enlace que te mandaron, o pégalo aquí, o elige el archivo .phenom.</p>
+  <label class="muted">Enlace o código<textarea class="code" id="oTexto"></textarea></label>
+  <div><button class="pill" id="oAbrir" type="button">Abrir</button><button class="lnk" id="oEscanear" type="button" hidden>Escanear QR</button></div>
+  <label class="muted">O elige un archivo<input id="oArchivo" type="file"></label>
+  <p class="muted" id="oScanInfo"></p>
+  <video id="oVideo" playsinline muted hidden></video>
+  <div id="oTarjeta" hidden>
+    <span class="chip">Tarjeta</span>
+    <p>Tarjeta de <b id="oTNombre"></b> · huella <span class="fp" id="oTFp"></span></p>
+    <p class="muted">Compara la huella con la que ve el otro teléfono en «Mi tarjeta».</p>
+    <button class="pill" id="oConfiar" type="button">Confiar</button>
+  </div>
+  <div id="res" hidden>
+    <span class="chip" id="resChip">—</span>
+    <p class="muted" id="resMsg"></p>
+    <div class="tabs" role="tablist"><button role="tab" data-t="s" aria-selected="true">Simple</button><button role="tab" data-t="d" aria-selected="false">Detallado</button><button role="tab" data-t="b" aria-selected="false">En bruto</button></div>
+    <div class="view" data-p="s"></div><div class="view" data-p="d" hidden></div><div class="view" data-p="b" hidden></div>
+    <div id="oAcuse" hidden>
+      <p class="lbl">Devolver acuse firmado</p>
+      <button class="pill" id="oCrearAcuse" type="button">Crear acuse</button>
+      <div id="oAcuseOut" hidden>
+        <div><button class="pill" id="aCompartir" type="button">Compartir acuse</button><button class="pill ghost" id="aCopiar" type="button">Copiar enlace</button><button class="pill ghost" id="aArchivo" type="button">Descargar archivo</button></div>
+        <canvas class="qr" id="aQr" width="10" height="10" role="img" aria-label="QR del acuse"></canvas>
+        <label class="muted">Enlace del acuse<textarea class="code" id="aLink" readonly></textarea></label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-screen="bandeja" hidden>
+  <p class="lbl">Bandeja · solo en este teléfono</p>
+  <h1>Bandeja.</h1>
+  <ul class="tray" id="bLista"></ul>
+  <button class="lnk" id="bBorrar" type="button">Vaciar bandeja</button>
+</section>
+
+<section class="screen" data-screen="llavero" hidden>
+  <p class="lbl">Llavero</p>
+  <h1>En quién confías.</h1>
+  <ul class="tray" id="kLista"></ul>
+</section>
+
+<section class="screen" data-screen="vivo" hidden>
+  <p class="lbl">Opcional · secundaria</p>
+  <h1>Conexión en vivo.</h1>
+  <p class="muted">Solo si los dos teléfonos están abiertos a la vez y en la <b>misma wifi</b>. Sin servidores externos (sin STUN ni TURN), así que con datos móviles normalmente no conecta. Si falla, usa el <a href="#enviar">Sobre</a>: no necesita conexión en vivo.</p>
+  <span class="chip" id="vEstado">Sin conexión</span>
+  <div><button class="pill" id="vCrear" type="button">Crear código (lado A)</button></div>
+  <label class="muted">Código del otro teléfono<textarea class="code" id="vOtro"></textarea></label>
+  <div><button class="pill ghost" id="vUsar" type="button">Usar código</button><button class="pill ghost" id="vCopiar" type="button">Copiar mi código</button></div>
+  <label class="muted">Mi código<textarea class="code" id="vMio" readonly></textarea></label>
+  <div><button class="pill" id="vEnviar" type="button" disabled>Enviar último sobre</button><button class="lnk" id="vReintentar" type="button" disabled>Reintentar sin código nuevo</button></div>
+  <p class="muted" id="vInfo" aria-live="polite"></p>
+  <pre class="reg" id="vLog"></pre>
+</section>
+
+<section class="screen" data-screen="limites" hidden>
+  <p class="lbl">Honestidad</p>
+  <h1>Límites.</h1>
+  <ul class="rows">
+    <li><p>Probado solo en navegadores de escritorio y emulados. Aún no en teléfonos reales con el sobre.</p></li>
+    <li><p>Tamaño: un enlace de hasta unos 2.000 caracteres suele pasar bien por chat. Si es más largo, usa el archivo. El QR de un solo cuadro se usa hasta 900 caracteres; si es más, se muestra un QR animado de varios cuadros, que solo se puede leer con cámara en navegadores con BarcodeDetector (Chrome en Android).</p></li>
+    <li><p>WhatsApp, iMessage y otros chats pueden cortar enlaces largos o cambiar archivos. Si cambia un solo carácter, la huella ya no coincide y el sobre sale ROTA ✗, diciendo qué pieza falla. Eso es la protección funcionando: pide que te lo reenvíen como archivo.</p></li>
+    <li><p>En iPhone (Safari), compartir archivos puede no estar disponible: entonces se comparte el enlace o se copia. Para abrir un archivo, usa «Elegir archivo» en Abrir.</p></li>
+    <li><p>Las llaves son de cada teléfono y no tienen respaldo: si borras los datos del navegador, la llave se pierde y hay que compartir la tarjeta otra vez.</p></li>
+    <li><p>Verificado ✓ prueba que el informe no cambió y que lo firmó una llave en la que confías. NO prueba que el contenido sea verdad ni tiene valor legal.</p></li>
+    <li><p>La conexión en vivo es opcional y solo para la misma wifi: no funciona en todas las redes.</p></li>
+  </ul>
+</section>
+
+</main>
+<footer class="ft">Versión de prueba · datos de ejemplo · sin pagos reales · <a href="#limites">Límites</a></footer>
+<div id="toast" role="status"></div>
+<script src="qr.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
