@@ -6,7 +6,7 @@
 <title>Comprobantes · Prototipo (no mueve dinero)</title>
 <meta name="description" content="Prototipo: comprobantes verificables para ahorristas y comercios, y operaciones pendientes sin internet. No mueve dinero ni está conectado a bancos.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0b0c10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Comprobantes">
 <link rel="manifest" href="manifest.webmanifest">
@@ -15,44 +15,79 @@
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
+<div class="bg-glow" aria-hidden="true"></div>
+
 <header class="hd">
-  <button class="back" id="atras" hidden aria-label="Volver al inicio">‹ Inicio</button>
-  <span class="brand"><img src="icons/phenom-logo.svg" alt="" width="32" height="32">COMPROBANTES</span>
-  <span class="pill">Prototipo · no mueve dinero</span>
+  <button class="back" id="atras" hidden aria-label="Volver al inicio">
+    <span class="back-ico" aria-hidden="true">‹</span> Inicio
+  </button>
+  <span class="brand">
+    <span class="mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="28" height="28"><circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 16.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span class="brand-txt">Comprobantes</span>
+  </span>
+  <span class="pill" title="Versión de prueba">Prototipo · no mueve dinero</span>
 </header>
 
 <main id="main">
 
 <section data-s="inicio" hidden>
+  <p class="eyebrow">En tu teléfono · sin bancos</p>
   <h1>Comprobantes que puedes comprobar</h1>
-  <p class="lead">Crea un comprobante sellado, registra una operación sin internet o verifica uno que te enviaron. Todo queda en este teléfono.</p>
-  <div id="netBar" class="net on" role="status">Con internet</div>
-  <button class="big go" id="bCrear">Crear comprobante</button>
-  <button class="big alt" id="bOffline">Registrar operación sin internet</button>
-  <button class="big alt" id="bVerificar">Verificar comprobante</button>
-  <div class="row">
-    <button class="lnk" id="bLista">Operaciones pendientes</button>
+  <p class="lead">Crea un comprobante sellado, registra una venta sin internet o verifica uno que te enviaron. Todo queda aquí.</p>
+  <div id="netBar" class="net on" role="status"><span class="dot"></span><span class="net-txt">Con internet</span></div>
+
+  <button class="action primary" id="bCrear">
+    <span class="action-ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="28" height="28"><rect x="4" y="3" width="16" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 9h8M8 13h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </span>
+    <span class="action-body"><span class="action-title">Crear comprobante</span><span class="action-sub">Reembolso demo o venta de comercio</span></span>
+  </button>
+  <button class="action" id="bOffline">
+    <span class="action-ico amber" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="28" height="28"><path d="M5 12a7 7 0 0114 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12v5M9.5 17.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </span>
+    <span class="action-body"><span class="action-title">Sin internet</span><span class="action-sub">Registrar operación pendiente · no cobrada</span></span>
+  </button>
+  <button class="action" id="bVerificar">
+    <span class="action-ico soft" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="28" height="28"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </span>
+    <span class="action-body"><span class="action-title">Verificar</span><span class="action-sub">Abrir un comprobante y ver si cambió</span></span>
+  </button>
+
+  <div class="row soft-row">
+    <button class="lnk" id="bLista">Ver pendientes</button>
     <button class="lnk circ" id="bAyuda" aria-label="Ayuda">?</button>
   </div>
 </section>
 
 <section data-s="crear-tipo" hidden>
+  <p class="eyebrow">Elegir tipo</p>
   <h1>¿Qué comprobante?</h1>
-  <p class="lead">El emisor debe ser una entidad en la que confíes. Un ahorrista <b>no</b> puede autoemitirse una prueba oficial.</p>
+  <p class="lead">El emisor debe ser alguien en quien confíes. Un ahorrista <b>no</b> puede autoemitirse una prueba oficial.</p>
   <button class="tile-full" id="bTipoReembolso" aria-pressed="false">
-    <span class="t-title">Ahorrista · reembolso o saldo</span>
-    <span class="t-sub">Emitido por una entidad (demo). No acredita dinero real.</span>
+    <span class="tile-ico" aria-hidden="true">👤</span>
+    <span class="tile-copy">
+      <span class="t-title">Ahorrista · reembolso o saldo</span>
+      <span class="t-sub">Lo sella una entidad (demo). No acredita dinero real.</span>
+    </span>
   </button>
   <button class="tile-full" id="bTipoVenta" aria-pressed="false">
-    <span class="t-title">Comercio · venta</span>
-    <span class="t-sub">Emitido por el comercio. Comprobante de venta, no cobro bancario.</span>
+    <span class="tile-ico" aria-hidden="true">🏪</span>
+    <span class="tile-copy">
+      <span class="t-title">Comercio · venta</span>
+      <span class="t-sub">Lo sella el comercio. Es comprobante de venta, no cobro bancario.</span>
+    </span>
   </button>
 </section>
 
 <section data-s="crear-form" hidden>
+  <p class="eyebrow">Nuevo</p>
   <h1 id="crearTitulo">Nuevo comprobante</h1>
   <p class="warn" id="crearAviso"></p>
-  <form id="fCrear">
+  <form id="fCrear" class="panel">
     <div id="camposReembolso" hidden>
       <label>Nombre del ahorrista (ejemplo)<input id="cAhorrista" maxlength="40" value="María Pérez" required></label>
       <label>Documento o referencia (ejemplo)<input id="cRef" maxlength="40" value="CI 1.234.567" required></label>
@@ -76,24 +111,30 @@
 </section>
 
 <section data-s="creado" hidden>
-  <h1>Comprobante listo ✓</h1>
+  <p class="eyebrow">Listo</p>
+  <h1>Comprobante listo</h1>
   <p class="lead" id="creadoMsg"></p>
-  <div class="card status-card">
-    <p class="badge-pend" id="creadoEstado"></p>
-    <p class="muted" id="creadoDetalle"></p>
-  </div>
+  <article class="receipt">
+    <div class="receipt-top">
+      <p class="badge-pend" id="creadoEstado"></p>
+      <p class="receipt-check" aria-hidden="true">✓</p>
+    </div>
+    <p class="receipt-detail" id="creadoDetalle"></p>
+    <p class="receipt-note">Puedes compartirlo. Quien lo abra verá si alguien lo cambió.</p>
+  </article>
   <button class="big go" id="cCompartir">Compartir</button>
-  <div class="row">
+  <div class="row soft-row">
     <button class="lnk" id="cCopiar">Copiar código</button>
     <button class="lnk" id="cArchivo">Descargar archivo</button>
   </div>
-  <button class="lnk" id="cOtro">Crear otro</button>
+  <button class="lnk center-lnk" id="cOtro">Crear otro</button>
 </section>
 
 <section data-s="offline" hidden>
+  <p class="eyebrow">Sin conexión</p>
   <h1>Operación sin internet</h1>
-  <p class="lead">Se guarda en este teléfono como <b>PENDIENTE · NO COBRADO</b>. Tener internet después solo la marca sincronizada: <b>nunca</b> la marca como pagada.</p>
-  <form id="fOffline">
+  <p class="lead">Se guarda en este teléfono como <b>PENDIENTE · NO COBRADO</b>. Cuando vuelva internet solo se marca sincronizada: <b>nunca</b> como pagada.</p>
+  <form id="fOffline" class="panel">
     <label>Comercio<input id="oComercio" maxlength="40" value="Despensa Central" required></label>
     <label>Descripción<input id="oDesc" maxlength="80" value="Venta pendiente (ejemplo)" required></label>
     <label>Monto (PYG)<input id="oMonto" type="number" inputmode="numeric" min="1" value="45000" required></label>
@@ -103,27 +144,33 @@
 </section>
 
 <section data-s="offline-ok" hidden>
+  <p class="eyebrow">Guardada</p>
   <h1>Registrada</h1>
-  <p class="badge-pend">PENDIENTE · NO COBRADO</p>
-  <p class="lead" id="offMsg"></p>
+  <article class="receipt amber-receipt">
+    <p class="badge-pend">PENDIENTE · NO COBRADO</p>
+    <p class="lead" id="offMsg"></p>
+  </article>
   <button class="big alt" id="offLista">Ver operaciones pendientes</button>
-  <button class="lnk" id="offOtra">Registrar otra</button>
+  <button class="lnk center-lnk" id="offOtra">Registrar otra</button>
 </section>
 
 <section data-s="lista" hidden>
+  <p class="eyebrow">Local</p>
   <h1>Operaciones pendientes</h1>
-  <div id="netBar2" class="net on" role="status">Con internet</div>
-  <p class="muted">Sincronizar solo confirma que el registro local se exportó. <b>No cobra ni paga.</b></p>
+  <div id="netBar2" class="net on" role="status"><span class="dot"></span><span class="net-txt">Con internet</span></div>
+  <p class="muted note-box">Sincronizar solo confirma el registro local. <b>No cobra ni paga.</b></p>
   <button class="big go" id="bSync" disabled>Sincronizar pendientes</button>
   <ul id="listaOps" class="lista"></ul>
-  <p class="muted" id="listaVacia" hidden>Todavía no hay operaciones.</p>
+  <p class="muted empty" id="listaVacia" hidden>Todavía no hay operaciones.</p>
 </section>
 
 <section data-s="verificar" hidden>
+  <p class="eyebrow">Comprobar</p>
   <h1>Verificar comprobante</h1>
-  <p class="lead">Abre el archivo o pega el código. Se comprueba solo si cambió algo.</p>
+  <p class="lead">Abre el archivo o pega el código. Verás si llegó intacto o si alguien lo cambió.</p>
   <label class="big alt file">Abrir archivo<input id="vArchivo" type="file" accept=".phenom,.json,text/plain,application/octet-stream"></label>
-  <details class="pegar"><summary>Pegar código o enlace</summary>
+  <details class="pegar panel">
+    <summary>Pegar código o enlace</summary>
     <label for="vTexto" class="sr">Código</label>
     <textarea id="vTexto" rows="4" placeholder="Pega aquí el enlace o el código"></textarea>
     <button class="big alt" id="vAbrir">Comprobar</button>
@@ -133,16 +180,17 @@
 <section data-s="res" hidden>
   <div id="rBig" class="verdict" role="status" aria-live="polite"></div>
   <p class="lead" id="rMsg"></p>
-  <div class="card" id="rDetalle"></div>
-  <div id="rDemoConfirm" hidden class="card">
-    <p class="q">Demo: confirmar reembolso / pago</p>
-    <p class="muted">Esto <b>no</b> mueve dinero. Usa una identidad de emisor distinta solo para mostrar cómo una entidad podría confirmar. En la vida real lo haría el banco o el comercio, no esta app sola.</p>
+  <div class="card receipt-card" id="rDetalle"></div>
+  <div id="rDemoConfirm" hidden class="card demo-card">
+    <p class="q">Demo: confirmar reembolso</p>
+    <p class="muted">Esto <b>no</b> mueve dinero. Usa una identidad de emisor distinta solo para mostrar cómo una entidad podría confirmar. En la vida real lo haría la entidad, no esta app sola.</p>
     <button class="big alt" id="bDemoConfirmar">Simular confirmación del emisor</button>
   </div>
-  <button class="lnk" id="rInicio">Volver al inicio</button>
+  <button class="lnk center-lnk" id="rInicio">Volver al inicio</button>
 </section>
 
 <section data-s="ayuda" hidden>
+  <p class="eyebrow">Guía</p>
   <h1>Ayuda</h1>
   <ol class="pasos">
     <li><b>Crear comprobante</b>: el comercio o una entidad demo lo sella. Compártelo por WhatsApp, correo o archivo.</li>
@@ -151,18 +199,18 @@
   </ol>
   <h2>Límites honestos</h2>
   <ul class="muted lim">
-    <li>Prototipo: no mueve dinero, no acredita saldos y no está conectado a bancos paraguayos ni a ninguna entidad oficial.</li>
+    <li>Prototipo: no mueve dinero, no acredita saldos y no está conectado a bancos ni a ninguna entidad oficial.</li>
     <li>Un ahorrista no puede autoemitirse una prueba oficial: el emisor debe ser una entidad confiable.</li>
     <li>Verificado = no cambió y lo firmó esa identidad en este teléfono; no prueba que el contenido sea verdad ni tiene valor legal por sí solo.</li>
     <li>Los datos viven solo en este navegador. Si borras los datos del sitio, se pierde la identidad local.</li>
     <li>No uses logos ni digas que hay un convenio con un banco o con el gobierno: este es un prototipo independiente.</li>
   </ul>
-  <p class="muted">Código de tu sello: <b id="aFp"></b></p>
+  <p class="muted seal">Código de tu sello: <b id="aFp"></b></p>
 </section>
 
 </main>
 
-<footer class="ft">Prototipo independiente · no mueve dinero · no afiliado a bancos ni autoridades · datos solo en este teléfono</footer>
+<footer class="ft">Prototipo independiente · no mueve dinero · datos solo en este teléfono</footer>
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="app.js"></script>
 </body>

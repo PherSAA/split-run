@@ -142,7 +142,9 @@ function pintarNet() {
   ONLINE = navigator.onLine;
   $$('.net').forEach(el => {
     el.className = 'net ' + (ONLINE ? 'on' : 'off');
-    el.textContent = ONLINE ? 'Con internet' : 'Sin internet · los datos siguen en este teléfono';
+    const txt = el.querySelector('.net-txt');
+    const label = ONLINE ? 'Con internet' : 'Sin internet · los datos siguen en este teléfono';
+    if (txt) txt.textContent = label; else el.textContent = label;
   });
   const btn = $('#bSync');
   if (btn) btn.disabled = !ONLINE;
@@ -245,6 +247,7 @@ $('#fCrear').onsubmit = async e => {
     ? 'Sellado por la entidad demo. Compártelo para que otra persona lo verifique. No acredita dinero.'
     : 'Sellado por este teléfono (comercio). Compártelo para verificarlo. No es un cobro.';
   $('#creadoEstado').textContent = TIPO === 'reembolso' ? 'NO ACREDITADO · DEMO' : 'REGISTRADO · NO COBRADO';
+  $('#creadoEstado').className = 'badge-pend';
   $('#creadoDetalle').textContent = (datos.ahorrista || datos.comercio) + ' · ' + money(datos.monto) + ' · ' + new Date().toLocaleString('es');
   ver('creado');
 };
@@ -304,10 +307,10 @@ function pintarLista() {
         ? '<span class="est sync">Sincronizado · NO COBRADO</span>'
         : '<span class="est pend">PENDIENTE · NO COBRADO</span>';
     return `<li data-id="${esc(op.id)}">
-      <span><b>${esc(op.comercio)}</b><br>${esc(op.descripcion)} · ${esc(money(op.monto))}
-      <br><span class="muted">${esc(new Date(op.ts).toLocaleString('es'))}</span></span>
-      <span style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">${est}
-      <button class="del-btn" data-del="${esc(op.id)}">Eliminar</button></span></li>`;
+      <div class="op-main"><b>${esc(op.comercio)}</b><div class="op-amt">${esc(money(op.monto))}</div>
+      <span class="muted">${esc(op.descripcion)} · ${esc(new Date(op.ts).toLocaleString('es'))}</span></div>
+      <div class="op-side">${est}
+      <button class="del-btn" data-del="${esc(op.id)}">Eliminar</button></div></li>`;
   }).join('');
   $$('[data-del]').forEach(b => b.onclick = () => {
     if (!confirm('¿Eliminar esta operación pendiente? No se puede deshacer.')) return;
@@ -417,20 +420,20 @@ function mostrar(r) {
   if (d) {
     html = '<dl class="kv">';
     const rows = [
-      ['Tipo', d.tipo === 'venta' ? 'Venta de comercio' : 'Reembolso / saldo (demo)'],
-      ['Monto', money(d.monto)],
-      d.ahorrista ? ['Ahorrista', d.ahorrista] : null,
-      d.referencia ? ['Referencia', d.referencia] : null,
-      d.comercio ? ['Comercio', d.comercio] : null,
-      d.descripcion ? ['Descripción', d.descripcion] : null,
-      d.cliente ? ['Cliente', d.cliente] : null,
-      d.emisor_nombre ? ['Emisor', d.emisor_nombre] : null,
-      ['Estado', (d.estado_pago || '').replace(/_/g, ' ')],
-      env && env.emisor ? ['Sello', env.emisor.fp] : null,
-      env ? ['Fecha', new Date(env.ts).toLocaleString('es')] : null,
-      ['Aviso', d.aviso || 'Prototipo']
+      ['Tipo', d.tipo === 'venta' ? 'Venta de comercio' : 'Reembolso / saldo (demo)', ''],
+      ['Monto', money(d.monto), 'amt'],
+      d.ahorrista ? ['Ahorrista', d.ahorrista, ''] : null,
+      d.referencia ? ['Referencia', d.referencia, ''] : null,
+      d.comercio ? ['Comercio', d.comercio, ''] : null,
+      d.descripcion ? ['Descripción', d.descripcion, ''] : null,
+      d.cliente ? ['Cliente', d.cliente, ''] : null,
+      d.emisor_nombre ? ['Emisor', d.emisor_nombre, ''] : null,
+      ['Estado', (d.estado_pago || '').replace(/_/g, ' '), ''],
+      env && env.emisor ? ['Sello', env.emisor.fp, ''] : null,
+      env ? ['Fecha', new Date(env.ts).toLocaleString('es'), ''] : null,
+      ['Aviso', d.aviso || 'Prototipo', '']
     ].filter(Boolean);
-    html += rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('') + '</dl>';
+    html += rows.map(([k, v, cls]) => `<dt>${esc(k)}</dt><dd class="${cls}">${esc(v)}</dd>`).join('') + '</dl>';
   } else if (r.pasos && r.pasos.length) {
     html = '<dl class="kv">' + r.pasos.map(p => `<dt>${p.ok ? '✓' : '✗'} ${esc(p.n)}</dt><dd>${esc(p.d || '')}</dd>`).join('') + '</dl>';
   }
@@ -474,6 +477,7 @@ $('#bDemoConfirmar').onclick = async () => {
   ULT_LINK = link; ULT_ID = piezas.id;
   $('#creadoMsg').textContent = 'Confirmación DEMO creada por una identidad de emisor distinta. Sigue sin mover dinero.';
   $('#creadoEstado').textContent = 'CONFIRMADO (DEMO) · NO REAL';
+  $('#creadoEstado').className = 'badge-pend';
   $('#creadoDetalle').textContent = 'Referencia al comprobante anterior · ' + money(original.env.datos.monto);
   ver('creado');
   toast('Confirmación demo lista · no es un pago real');

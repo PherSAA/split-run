@@ -5,8 +5,8 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#0b0c10",
+  "theme_color": "#0b0c10",
   "description": "Prototipo: comprobantes verificables y operaciones pendientes sin internet. No mueve dinero ni está conectado a bancos.",
   "icons": [
     { "src": "icons/phenom-logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
