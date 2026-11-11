@@ -195,8 +195,10 @@ def main():
                 page.get_by_role("button", name="Proponer cambios").click()
                 page.locator(".price").last.fill("445")
                 save(page, 4)
-                page.reload()
-                expect(current(page)).to_contain_text("$695.00")
+                for _ in range(2):
+                    page.reload()
+                    expect(current(page)).to_contain_text("$695.00")
+                assert page.url == url + "presupuestos/"
                 assert len(json.loads(export(page))["records"]) == 7
             print("PASS cierre, reapertura, importación, edición, recarga y exportación sin servidor", flush=True)
         finally:

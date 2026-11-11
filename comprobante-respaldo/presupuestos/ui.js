@@ -84,7 +84,7 @@ function versionCard(record, current, showActions) {
 async function show(id) {
   const ids = await listIds(), select = $('documents');
   // Al recargar, cada pestaña recupera el documento que estaba consultando.
-  const remembered = location.hash.slice(1);
+  const remembered = window.history.state?.presupuesto;
   active = id || (ids.includes(remembered) ? remembered : ids[0]); records = active ? await load(active) : [];
   select.replaceChildren();
   for (const k of ids) {
@@ -98,7 +98,7 @@ async function show(id) {
   sheet.hidden = !records.length; sheet.replaceChildren();
   if (fileUrl) { URL.revokeObjectURL(fileUrl); fileUrl = null; }
   if (!records.length) return;
-  window.history.replaceState(null, '', '#' + active);
+  window.history.replaceState({ presupuesto: active }, '');
   const keys = new Map(records.map(r => [window.Sello.canon(r.body.key), r.body.key]));
   fingerprints = new Map(await Promise.all(Array.from(keys, async ([encoded, jwk]) =>
     [encoded, await window.Sello.huella(jwk)])));

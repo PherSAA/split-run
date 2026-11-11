@@ -1,7 +1,7 @@
 // El ámbito forma parte del nombre para aislar copias de prueba del mismo origen.
 const scope = self.registration.scope;
 const prefix = 'comp-respaldo:' + scope + ':';
-const CACHE = prefix + 'v12-1';
+const CACHE = prefix + 'v12-2';
 const FILES = ['./', './index.html', './app.css', './sello.js', './app.js', './manifest.webmanifest',
   './icons/phenom-logo.svg', './icons/phenom-maskable.svg', './presupuestos/', './presupuestos/index.html',
   './presupuestos/ui.js', './presupuestos/modelo.js', './presupuestos/archivo.js', './presupuestos/estilo.css'];
@@ -16,6 +16,7 @@ self.addEventListener('activate', event => event.waitUntil(
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   url.search = '';
+  url.hash = '';
   if (event.request.method !== 'GET' || !urls.has(url.href)) return;
   event.respondWith(caches.open(CACHE).then(async cache => (await cache.match(url.href)) || fetch(event.request)));
 });
