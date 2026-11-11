@@ -1,0 +1,30 @@
+name: PHERSAA V12 · Intercambio móvil
+on:
+  push:
+    branches: [feature/phersaa-v12-comprobantes]
+  pull_request:
+    branches: [main]
+    paths:
+      - 'comprobante-respaldo/**'
+      - 'tests/v12/**'
+      - '.github/workflows/phersaa-v12.yml'
+permissions:
+  contents: read
+jobs:
+  presupuestos:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/v12/protocolo.mjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright==1.55.0
+      - run: python -m playwright install --with-deps webkit chromium
+      - run: python tests/v12/telefonos.py

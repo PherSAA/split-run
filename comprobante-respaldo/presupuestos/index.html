@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex"><meta name="theme-color" content="#122b2c">
+<title>Presupuestos compartidos · Comprobantes</title>
+<link rel="icon" href="../icons/phenom-logo.svg"><link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header><div class="bar"><a href="../">‹ Comprobantes</a><span>PHERSAA / V12</span></div></header>
+<main>
+<section class="intro"><p class="over">Cuaderno de obra</p><h1>Presupuestos compartidos</h1>
+<p>Prepara las partidas en tu teléfono y envía un archivo para que otra persona revise la misma versión.</p>
+<small id="offline" role="status">Preparando el acceso sin internet…</small></section>
+<p id="notice" role="status" aria-live="polite"></p>
+<section id="tools" aria-label="Acciones de presupuesto" hidden>
+<div class="actions"><button class="primary" id="create">Nuevo presupuesto</button><button id="importBtn">Importar archivo</button><button id="demo">Ejemplo de drywall · $650</button></div>
+<input id="file" type="file" hidden accept=".json,application/json">
+<label id="chooser" hidden>Presupuestos guardados<select id="documents"></select></label>
+</section>
+<section id="sheet" hidden></section>
+<form id="editor" hidden><p class="over" id="editMode"></p><h2 id="editTitle">Editar presupuesto</h2>
+<label>Trabajo<input id="title" maxlength="100" required autocomplete="off" placeholder="Nombre del trabajo"></label>
+<div id="lines"></div>
+<button type="button" id="add">Añadir partida</button>
+<div class="sum"><span>Total USD</span><strong id="editTotal"></strong></div>
+<div class="actions"><button class="primary" type="submit" id="save">Firmar y guardar</button><button type="button" id="cancel">Cancelar</button></div></form>
+<footer><strong>La Llave</strong><p>La firma permite comprobar qué sello firmó cada versión y si el contenido cambió. La identidad legal del firmante requiere verificación independiente.</p>
+<small id="seal"></small></footer>
+</main>
+<script src="../sello.js"></script><script type="module" src="ui.js"></script>
+</body></html>
