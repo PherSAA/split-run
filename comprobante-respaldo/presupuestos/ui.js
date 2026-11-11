@@ -4,6 +4,7 @@ import { append, listIds, load } from './archivo.js';
 const $ = id => document.getElementById(id);
 const money = cents => (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 const short = h => h.slice(0, 12);
+let fingerprints = new Map();
 let key, active, records = [], draft, busy = false, fileUrl;
 function el(tag, text, cls) {
   const node = document.createElement(tag);
@@ -49,7 +50,8 @@ function quoteView(q) {
 function evidence(record) {
   const detail = el('details');
   detail.append(el('summary', 'Ver huella y sello'), el('p', 'SHA-256'), el('code', record.hash),
-    el('p', 'Clave pública del sello'), el('code', JSON.stringify(record.body.key)));
+    el('p', 'Sello · ' + fingerprints.get(window.Sello.canon(record.body.key))),
+    el('code', JSON.stringify(record.body.key)));
   for (const h of record.body.parents || []) detail.append(el('p', 'Versión anterior'), el('code', h));
   return detail;
 }
@@ -81,7 +83,9 @@ function versionCard(record, current, showActions) {
 }
 async function show(id) {
   const ids = await listIds(), select = $('documents');
-  active = id || ids[0]; records = active ? await load(active) : [];
+  // Al recargar, cada pestaña recupera el documento que estaba consultando.
+  const remembered = location.hash.slice(1);
+  active = id || (ids.includes(remembered) ? remembered : ids[0]); records = active ? await load(active) : [];
   select.replaceChildren();
   for (const k of ids) {
     const data = k === active ? records : await load(k);
@@ -94,6 +98,10 @@ async function show(id) {
   sheet.hidden = !records.length; sheet.replaceChildren();
   if (fileUrl) { URL.revokeObjectURL(fileUrl); fileUrl = null; }
   if (!records.length) return;
+  window.history.replaceState(null, '', '#' + active);
+  const keys = new Map(records.map(r => [window.Sello.canon(r.body.key), r.body.key]));
+  fingerprints = new Map(await Promise.all(Array.from(keys, async ([encoded, jwk]) =>
+    [encoded, await window.Sello.huella(jwk)])));
   const current = heads(records), versions = revisions(records);
   sheet.append(el('p', 'Presupuesto · USD', 'over'), el('h2', current.length > 1 ? 'Propuestas en conflicto' : current[0].body.quote.title),
     el('small', 'ID ' + active, 'hash'));

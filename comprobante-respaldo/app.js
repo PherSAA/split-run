@@ -1,7 +1,7 @@
 // Comprobantes · Prototipo (NO MUEVE DINERO). ECDSA P-256 no exportable, recibos firmados, verificación local.
 'use strict';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-const { enc, hex, unhex, sha, canon, SIG, huella, nuevaLlave, llavePersistente, firmar, firmaOk } = window.Sello;
+const { enc, hex, sha, canon, SIG, huella, nuevaLlave, llavePersistente, firmar, firmaOk } = window.Sello;
 const dec = new TextDecoder();
 const LS = {
   ops: 'comp_respaldo_ops_v1',

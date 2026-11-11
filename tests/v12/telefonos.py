@@ -1,7 +1,6 @@
 """Ejecutar desde la raíz. Prueba navegadores reales con perfiles móviles emulados."""
 import json
 import os
-import tempfile
 import threading
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -42,8 +41,37 @@ def edit(page, labor):
 def current(page):
     return page.locator("#sheet > article")
 
+def capture(page, name):
+    directory = os.getenv("V12_EVIDENCE_DIR")
+    if directory:
+        path = Path(directory)
+        path.mkdir(parents=True, exist_ok=True)
+        page.screenshot(path=path / name, full_page=True)
+
+def classic_receipt(page):
+    page.locator("#bCrear").click()
+    page.locator("#bTipoVenta").click()
+    page.locator("#fCrear button[type=submit]").click()
+    expect(page.locator("#cArchivo")).to_be_visible()
+    with page.expect_download() as result:
+        page.locator("#cArchivo").click()
+    data = Path(result.value.path()).read_bytes()
+    page.locator("#atras").click()
+    page.locator("#bVerificar").click()
+    page.locator("#vArchivo").set_input_files({"name": "venta.phenom", "mimeType": "text/plain", "buffer": data})
+    expect(page.locator("#rBig")).to_contain_text("Verificado")
+    page.locator("#rInicio").click()
+    page.locator("#bOffline").click()
+    page.locator("#fOffline button[type=submit]").click()
+    expect(page.locator("#offMsg")).to_contain_text("guardada")
+    page.reload()
+    expect(page.locator("#bCrear")).to_be_visible()
+    op = page.evaluate("compRespaldo.ops()[0]")
+    assert op["estado"] == "PENDIENTE_NO_COBRADO" and op["sello"]["fp"] == page.evaluate("compRespaldo.yo()")
+    print("PASS comprobante clásico firmado y verificado, y registro pendiente persistente", flush=True)
+
 def main():
-    with sync_playwright() as p, tempfile.TemporaryDirectory() as tmp:
+    with sync_playwright() as p:
         server = ThreadingHTTPServer(("127.0.0.1", 0), partial(QuietHandler, directory=ROOT))
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
@@ -67,6 +95,8 @@ def main():
                 page = ctx.new_page()
                 page.goto(url)
                 expect(page.locator("#bCrear")).to_be_visible()
+                if slot == 0:
+                    classic_receipt(page)
                 legacy_seal = page.evaluate("compRespaldo.yo()")
                 page.get_by_role("link", name="Presupuestos compartidos").click()
                 expect(page.locator("#seal")).to_contain_text(legacy_seal)
@@ -85,6 +115,7 @@ def main():
             a.locator("#demo").click()
             expect(a.locator("#editTotal")).to_have_text("$650.00")
             save(a, 1)
+            capture(a, "01-iphone-drywall.png")
             original = export(a)
             import_ok(b, original)
             b.get_by_role("button", name="Aceptar versión").click()
@@ -103,6 +134,8 @@ def main():
             import_ok(c, brancha)
             expect(current(c)).to_have_count(2)
             expect(c.locator("#sheet h2")).to_have_text("Propuestas en conflicto")
+            assert c.evaluate("document.documentElement.scrollWidth <= innerWidth")
+            capture(c, "02-android-conflicto.png")
             for amount in ["$680.00", "$700.00"]:
                 expect(current(c).filter(has_text=amount)).to_have_count(1)
             current(c).filter(has_text="$680.00").get_by_role("button").click()
@@ -125,7 +158,8 @@ def main():
                 upload(a, bad)
                 expect(a.locator("#notice")).to_contain_text("Archivo rechazado")
                 expect(current(a)).to_contain_text("$690.00")
-            assert len(json.loads(export(a))["records"]) == 6
+            after_rejection = {r["hash"]: r for r in json.loads(export(a))["records"]}
+            assert after_rejection == {r["hash"]: r for r in json.loads(resolved)["records"]}
             a.locator("#history > summary").click()
             old = a.locator("#history article").filter(has_text="$650.00")
             old.get_by_role("button", name="Recuperar como nueva versión").click()

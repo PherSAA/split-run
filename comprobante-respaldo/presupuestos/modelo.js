@@ -10,10 +10,9 @@ export function check(condition, message = 'Archivo de presupuesto inválido.') 
   if (!condition) throw new Error(message);
 }
 function keys(value, expected) {
+  const fields = expected.split(' ');
   check(value && typeof value === 'object' && !Array.isArray(value) &&
-    Object.keys(value).sort().join('|') === expected.split(' ').sort().join('|'));
-  // También rechaza claves adicionales que contengan el separador.
-  check(expected.split(' ').every(key => Object.hasOwn(value, key)));
+    Object.keys(value).length === fields.length && fields.every(key => Object.hasOwn(value, key)));
 }
 function integer(n, min, max) {
   return Number.isSafeInteger(n) && n >= min && n <= max;

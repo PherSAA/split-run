@@ -1,7 +1,5 @@
 name: PHERSAA V12 · Intercambio móvil
 on:
-  push:
-    branches: [feature/phersaa-v12-comprobantes]
   pull_request:
     branches: [main]
     paths:
@@ -28,3 +26,10 @@ jobs:
       - run: pip install playwright==1.55.0
       - run: python -m playwright install --with-deps webkit chromium
       - run: python tests/v12/telefonos.py
+        env:
+          V12_EVIDENCE_DIR: evidencia
+      - uses: actions/upload-artifact@v4
+        with:
+          name: capturas-moviles-v12
+          path: evidencia/*.png
+          if-no-files-found: error
