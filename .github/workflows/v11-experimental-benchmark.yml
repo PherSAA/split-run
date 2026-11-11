@@ -1,0 +1,30 @@
+name: PHERSAA V11 experimental benchmark
+on:
+  workflow_dispatch:
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tasks: [3000, 10000, 100000]
+        scenario: [normal, failover]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Execute isolated benchmark
+        shell: bash
+        run: |
+          mkdir -p results
+          if [ "${{ matrix.scenario }}" = "failover" ]; then
+            python experiments/v11_cooperative_benchmark.py --tasks ${{ matrix.tasks }} --fail-at 100 > results/benchmark.json
+          else
+            python experiments/v11_cooperative_benchmark.py --tasks ${{ matrix.tasks }} > results/benchmark.json
+          fi
+          cat results/benchmark.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v11-${{ matrix.tasks }}-${{ matrix.scenario }}
+          path: results/benchmark.json
