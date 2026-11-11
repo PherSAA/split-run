@@ -1,10 +1,22 @@
-const CACHE = 'comprobante-respaldo-v2';
-const FILES = ['./', './index.html', './app.css', './app.js', './manifest.webmanifest', './icons/phenom-logo.svg', './icons/phenom-maskable.svg'];
-self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
-self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
-self.addEventListener('fetch', e => {
-  const u = new URL(e.request.url);
-  if (e.request.method !== 'GET' || u.origin !== location.origin || !u.pathname.includes('/comprobante-respaldo/')) return;
-  e.respondWith(fetch(e.request).then(r => { if (r.ok) { const c = r.clone(); caches.open(CACHE).then(x => x.put(e.request, c)); } return r; })
-    .catch(() => caches.match(e.request, { ignoreSearch: true }).then(r => r || caches.match('./index.html'))));
+// El ámbito forma parte del nombre para aislar copias de prueba del mismo origen.
+const scope = self.registration.scope;
+const prefix = 'comp-respaldo:' + scope + ':';
+const CACHE = prefix + 'v12-2';
+const FILES = ['./', './index.html', './app.css', './sello.js', './app.js', './manifest.webmanifest',
+  './icons/phenom-logo.svg', './icons/phenom-maskable.svg', './presupuestos/', './presupuestos/index.html',
+  './presupuestos/ui.js', './presupuestos/modelo.js', './presupuestos/archivo.js', './presupuestos/estilo.css'];
+const urls = new Set(FILES.map(path => new URL(path, scope).href));
+self.addEventListener('install', event => event.waitUntil(
+  caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting())
+));
+self.addEventListener('activate', event => event.waitUntil(
+  caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith(prefix) && k !== CACHE)
+    .map(k => caches.delete(k)))).then(() => self.clients.claim())
+));
+self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  url.search = '';
+  url.hash = '';
+  if (event.request.method !== 'GET' || !urls.has(url.href)) return;
+  event.respondWith(caches.open(CACHE).then(async cache => (await cache.match(url.href)) || fetch(event.request)));
 });
